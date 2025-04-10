@@ -8,23 +8,25 @@ import WelcomeMessage from '@/components/WelcomeMessage';
 import { useEchooResponses } from '@/hooks/useEchooResponses';
 import { Message } from '@/components/ChatMessage';
 import { Sparkles } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [showWelcome, setShowWelcome] = useState(true);
   const { generateResponse, isTyping } = useEchooResponses();
+  const { t, language } = useLanguage();
 
-  // Initial greeting message when component mounts
+  // Initial greeting message when component mounts or language changes
   useEffect(() => {
     const initialMessage: Message = {
       id: uuidv4(),
-      content: "Hello! I'm Echoo, your heart's companion. How are you feeling today?",
+      content: t('howAreYouFeeling'),
       sender: 'echoo',
       timestamp: new Date()
     };
     
     setMessages([initialMessage]);
-  }, []);
+  }, [language, t]);
 
   const handleSendMessage = async (content: string) => {
     // Add user message
@@ -90,7 +92,7 @@ const Index = () => {
       
       <footer className="text-center text-xs text-gray-500 mt-4 flex items-center justify-center gap-1">
         <Sparkles size={12} className="text-echoo" />
-        <span>Powered by heart-centered AI</span>
+        <span>{t('poweredBy')}</span>
       </footer>
     </div>
   );
