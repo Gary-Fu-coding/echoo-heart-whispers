@@ -4,12 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
 import { Button } from './ui/button';
 import LanguageSelector from './LanguageSelector';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Users } from 'lucide-react';
 import { useRole } from '@/contexts/RoleContext';
 
 const ChatHeader = () => {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { role } = useRole();
 

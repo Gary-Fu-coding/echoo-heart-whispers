@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import i18n from 'i18next';
+import i18n from '../i18n';
 
 type Language = 'en' | 'es' | 'fr' | 'zh' | 'hi';
 
