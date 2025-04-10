@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useRole } from '@/contexts/RoleContext';
 
 const grades = [
   "Elementary (Grades 1-5)",
@@ -33,6 +34,7 @@ const TutorPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useLanguage();
+  const { setRole } = useRole();
 
   const handleStartLearning = () => {
     if (!selectedGrade || !selectedSubject) {
@@ -47,6 +49,9 @@ const TutorPage = () => {
     // Set these values in local storage for future reference
     localStorage.setItem('echoo-tutor-grade', selectedGrade);
     localStorage.setItem('echoo-tutor-subject', selectedSubject);
+    
+    // Set the role to tutor
+    setRole('tutor');
     
     // Navigate back to the chat with the tutor role already set
     navigate('/');
