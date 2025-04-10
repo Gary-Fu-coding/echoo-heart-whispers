@@ -36,12 +36,42 @@
     --radius: 1rem;
   }
 
+  .dark {
+    --background: 240 10% 10%;
+    --foreground: 210 40% 98%;
+    
+    --card: 240 10% 12%;
+    --card-foreground: 0 0% 98%;
+    
+    --popover: 240 10% 12%;
+    --popover-foreground: 0 0% 98%;
+    
+    --primary: 210 40% 50%;
+    --primary-foreground: 240 10% 3.9%;
+    
+    --secondary: 260 50% 50%;
+    --secondary-foreground: 0 0% 98%;
+    
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    
+    --accent: 260 50% 50%;
+    --accent-foreground: 0 0% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+  }
+
   * {
     @apply border-border;
   }
 
   body {
-    @apply bg-gradient-to-b from-blue-50 to-purple-50 text-foreground min-h-screen;
+    @apply bg-gradient-to-b from-background to-background/80 text-foreground min-h-screen transition-colors duration-300;
   }
   
   /* Custom scrollbar for chat container */
@@ -50,23 +80,21 @@
   }
   
   .chat-scrollbar::-webkit-scrollbar-track {
-    background: rgba(241, 245, 249, 0.5);
-    border-radius: 10px;
+    @apply bg-background/50 rounded-md;
   }
   
   .chat-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(139, 184, 232, 0.5);
-    border-radius: 10px;
+    @apply bg-primary/30 rounded-md;
   }
   
   .chat-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(139, 184, 232, 0.8);
+    @apply bg-primary/50;
   }
 }
 
 @layer components {
   .glass-panel {
-    @apply bg-white/70 backdrop-blur-sm border border-white/20 rounded-2xl shadow-md;
+    @apply bg-card/70 backdrop-blur-sm border border-border/20 rounded-2xl shadow-md;
   }
   
   .message-bubble {
@@ -74,10 +102,10 @@
   }
   
   .user-message {
-    @apply message-bubble bg-echoo-light self-end text-echoo-text;
+    @apply message-bubble bg-echoo-light dark:bg-accent/20 self-end text-echoo-text dark:text-foreground;
   }
   
   .echoo-message {
-    @apply message-bubble bg-echoo/20 self-start text-echoo-text;
+    @apply message-bubble bg-echoo/20 dark:bg-primary/20 self-start text-echoo-text dark:text-foreground;
   }
 }
