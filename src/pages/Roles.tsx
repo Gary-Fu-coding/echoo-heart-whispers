@@ -14,25 +14,28 @@ const Roles = () => {
       id: 'tutor', 
       icon: <Book className="h-8 w-8" />, 
       title: 'Tutor', 
-      description: 'Learn and grow with educational guidance' 
+      description: 'Learn and grow with educational guidance',
+      navigateTo: '/tutor'
     },
     { 
       id: 'financial', 
       icon: <BarChart className="h-8 w-8" />, 
       title: 'Financial Advisor', 
-      description: 'Get advice on financial matters' 
+      description: 'Get advice on financial matters',
+      navigateTo: '/'
     },
     { 
       id: 'friend', 
       icon: <Smile className="h-8 w-8" />, 
       title: 'AI Friend', 
-      description: 'Chat and connect with a friendly companion' 
+      description: 'Chat and connect with a friendly companion',
+      navigateTo: '/'
     }
   ];
   
-  const handleSelectRole = (roleId: 'friend' | 'tutor' | 'financial') => {
+  const handleSelectRole = (roleId: 'friend' | 'tutor' | 'financial', navigateTo: string) => {
     setRole(roleId);
-    navigate('/');
+    navigate(navigateTo);
   };
 
   return (
@@ -48,7 +51,7 @@ const Roles = () => {
               key={role.id}
               variant="outline"
               className="bg-white/70 dark:bg-gray-800/50 hover:bg-echoo-light dark:hover:bg-gray-700 text-echoo-text dark:text-gray-200 border-echoo/20 dark:border-gray-700 h-auto py-4 justify-start"
-              onClick={() => handleSelectRole(role.id as any)}
+              onClick={() => handleSelectRole(role.id as any, role.navigateTo)}
             >
               <div className="flex items-center gap-4">
                 <div className="text-echoo dark:text-echoo-light">

@@ -9,6 +9,7 @@ import { PersonalityProvider } from "./contexts/PersonalityContext";
 import { RoleProvider } from "./contexts/RoleContext";
 import Index from "./pages/Index";
 import Roles from "./pages/Roles";
+import TutorPage from "./pages/TutorPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/roles" element={<Roles />} />
+                <Route path="/tutor" element={<TutorPage />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
