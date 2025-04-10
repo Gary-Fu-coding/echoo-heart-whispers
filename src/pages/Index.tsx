@@ -9,6 +9,7 @@ import { useEchooResponses } from '@/hooks/useEchooResponses';
 import { Message } from '@/components/ChatMessage';
 import { Sparkles } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { PersonalityProvider } from '@/contexts/PersonalityContext';
 
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -18,14 +19,8 @@ const Index = () => {
 
   // Initial greeting message when component mounts or language changes
   useEffect(() => {
-    const initialMessage: Message = {
-      id: uuidv4(),
-      content: t('howAreYouFeeling'),
-      sender: 'echoo',
-      timestamp: new Date()
-    };
-    
-    setMessages([initialMessage]);
+    // We now don't add an initial message because we want the user to select a personality mode first
+    setMessages([]);
   }, [language, t]);
 
   const handleSendMessage = async (content: string) => {
@@ -73,28 +68,30 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md flex flex-col glass-panel h-[85vh] overflow-hidden shadow-lg">
-        <ChatHeader />
-        
-        <div className="relative flex-1 overflow-hidden">
-          <ChatContainer messages={messages} />
+    <PersonalityProvider>
+      <div className="min-h-screen flex flex-col items-center justify-center p-4">
+        <div className="w-full max-w-md flex flex-col glass-panel h-[85vh] overflow-hidden shadow-lg">
+          <ChatHeader />
           
-          {showWelcome && (
-            <div className="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm">
-              <WelcomeMessage onSelectPrompt={handleSelectPrompt} />
-            </div>
-          )}
+          <div className="relative flex-1 overflow-hidden">
+            <ChatContainer messages={messages} />
+            
+            {showWelcome && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+                <WelcomeMessage onSelectPrompt={handleSelectPrompt} />
+              </div>
+            )}
+          </div>
+          
+          <ChatInput onSendMessage={handleSendMessage} />
         </div>
         
-        <ChatInput onSendMessage={handleSendMessage} />
+        <footer className="text-center text-xs text-gray-500 mt-4 flex items-center justify-center gap-1">
+          <Sparkles size={12} className="text-echoo" />
+          <span>{t('poweredBy')}</span>
+        </footer>
       </div>
-      
-      <footer className="text-center text-xs text-gray-500 mt-4 flex items-center justify-center gap-1">
-        <Sparkles size={12} className="text-echoo" />
-        <span>{t('poweredBy')}</span>
-      </footer>
-    </div>
+    </PersonalityProvider>
   );
 };
 

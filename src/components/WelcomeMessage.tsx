@@ -1,44 +1,79 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { HeartPulse, Sun, Moon, Brain, Smile } from 'lucide-react';
+import { usePersonality } from '@/contexts/PersonalityContext';
 
 interface WelcomeMessageProps {
   onSelectPrompt: (prompt: string) => void;
 }
 
 const WelcomeMessage: React.FC<WelcomeMessageProps> = ({ onSelectPrompt }) => {
-  const prompts = [
-    { text: "How are you feeling today?", icon: <HeartPulse size={16} /> },
-    { text: "I'm having a difficult day", icon: <Moon size={16} /> },
-    { text: "Share something positive", icon: <Sun size={16} /> },
-    { text: "I need some advice", icon: <Brain size={16} /> },
-    { text: "Tell me a joke", icon: <Smile size={16} /> }
+  const { setMode } = usePersonality();
+  
+  const personalityModes = [
+    { 
+      id: 'comfort', 
+      icon: '🧸', 
+      title: 'Comfort Mode', 
+      description: 'Gentle, supportive, understanding' 
+    },
+    { 
+      id: 'wisdom', 
+      icon: '📚', 
+      title: 'Wisdom Mode', 
+      description: 'Calm, insightful, knowledgeable' 
+    },
+    { 
+      id: 'fun', 
+      icon: '🎉', 
+      title: 'Fun Mode', 
+      description: 'Upbeat, funny, lighthearted' 
+    },
+    { 
+      id: 'motivation', 
+      icon: '💪', 
+      title: 'Motivation Mode', 
+      description: 'Energetic, inspiring, encouraging' 
+    }
   ];
+  
+  const handleSelectMode = (modeId: 'comfort' | 'wisdom' | 'fun' | 'motivation') => {
+    setMode(modeId);
+    // Send initial greeting based on selected mode
+    const greetingMap = {
+      comfort: "I'm here for you. How are you feeling today?",
+      wisdom: "I'm ready to explore thoughtful conversations with you. What's on your mind?",
+      fun: "Hey there! Ready for some awesome chat time? What's happening?",
+      motivation: "Let's make today amazing! What are you working towards?"
+    };
+    onSelectPrompt(greetingMap[modeId]);
+  };
 
   return (
     <div className="glass-panel p-6 mx-auto my-6 max-w-md animate-fade-in">
-      <h2 className="text-xl font-semibold text-center text-echoo-dark mb-3">Welcome to Echoo</h2>
-      <p className="text-sm text-center text-echoo-text mb-6">
-        I'm your warm AI companion, here to listen, support, and chat about whatever's on your mind.
+      <h2 className="text-xl font-semibold text-center text-echoo-dark dark:text-white mb-3">Welcome to Echoo</h2>
+      <p className="text-sm text-center text-echoo-text dark:text-gray-300 mb-6">
+        Hi! I'm Echoo, your AI friend 💛<br />
+        How would you like me to speak with you today?
       </p>
       
-      <div className="space-y-2">
-        <p className="text-xs text-echoo-text/70 mb-2">Try starting with:</p>
-        <div className="flex flex-wrap gap-2 justify-center">
-          {prompts.map((prompt, index) => (
-            <Button
-              key={index}
-              variant="outline"
-              size="sm"
-              className="bg-white/70 hover:bg-echoo-light text-echoo-text border-echoo/20 flex items-center gap-1.5"
-              onClick={() => onSelectPrompt(prompt.text)}
-            >
-              {prompt.icon}
-              {prompt.text}
-            </Button>
-          ))}
-        </div>
+      <div className="grid grid-cols-1 gap-3">
+        {personalityModes.map((mode) => (
+          <Button
+            key={mode.id}
+            variant="outline"
+            className="bg-white/70 dark:bg-gray-800/50 hover:bg-echoo-light dark:hover:bg-gray-700 text-echoo-text dark:text-gray-200 border-echoo/20 dark:border-gray-700 h-auto py-3 justify-start"
+            onClick={() => handleSelectMode(mode.id as any)}
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">{mode.icon}</span>
+              <div className="text-left">
+                <div className="font-medium">{mode.title}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">{mode.description}</div>
+              </div>
+            </div>
+          </Button>
+        ))}
       </div>
     </div>
   );
