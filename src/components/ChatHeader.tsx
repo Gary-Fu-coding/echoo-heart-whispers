@@ -1,15 +1,17 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ThemeToggle } from './ThemeToggle';
+import ThemeToggle from './ThemeToggle';
 import { Button } from './ui/button';
-import { LanguageSelector } from './LanguageSelector';
-import { useTranslation } from 'react-i18next'; 
+import LanguageSelector from './LanguageSelector';
+import { useTranslation } from 'react-i18next';
 import { Users } from 'lucide-react';
+import { useRole } from '@/contexts/RoleContext';
 
 const ChatHeader = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { role } = useRole();
 
   return (
     <div className="flex items-center justify-between p-4 border-b border-echoo/10 dark:border-gray-700">
