@@ -1,20 +1,25 @@
 
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { useNavigate } from 'react-router-dom';
 import ChatHeader from '@/components/ChatHeader';
 import ChatContainer from '@/components/ChatContainer';
 import ChatInput from '@/components/ChatInput';
 import WelcomeMessage from '@/components/WelcomeMessage';
 import { useEchooResponses } from '@/hooks/useEchooResponses';
 import { Message } from '@/components/ChatMessage';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Users } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useRole } from '@/contexts/RoleContext';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [showWelcome, setShowWelcome] = useState(true);
   const { generateResponse, isTyping } = useEchooResponses();
   const { t, language } = useLanguage();
+  const { role } = useRole();
+  const navigate = useNavigate();
 
   // Initial greeting message when component mounts or language changes
   useEffect(() => {
@@ -83,6 +88,23 @@ const Index = () => {
         
         <ChatInput onSendMessage={handleSendMessage} />
       </div>
+      
+      {role === 'default' && messages.length === 0 && (
+        <div className="mt-4 mb-2 bg-white/80 dark:bg-gray-800/80 rounded-lg p-3 max-w-md text-center">
+          <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+            Want to customize how Echoo helps you?
+          </p>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => navigate('/roles')}
+            className="gap-2 text-echoo"
+          >
+            <Users size={16} />
+            Choose AI Role
+          </Button>
+        </div>
+      )}
       
       <footer className="text-center text-xs text-gray-500 mt-4 flex items-center justify-center gap-1">
         <Sparkles size={12} className="text-echoo" />

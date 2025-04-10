@@ -1,6 +1,6 @@
-
 import { useState } from 'react';
 import { usePersonality } from '@/contexts/PersonalityContext';
+import { useRole } from '@/contexts/RoleContext';
 
 // Sample response templates for different conversation contexts
 const GREETING_RESPONSES = {
@@ -10,26 +10,47 @@ const GREETING_RESPONSES = {
     "Welcome! I'm here and ready to listen. How are you feeling today?",
     "Hello, friend! It's wonderful to chat with you. How's your heart today?"
   ],
-  comfort: [
-    "Hi there. I'm here for you in a gentle, supportive way. How are you feeling right now?",
-    "Hello, I'm listening with care and warmth. Would you like to share how you're doing?",
-    "I'm here to provide a comforting space for you. How's your heart feeling today?"
-  ],
-  wisdom: [
-    "Greetings. I'm here to offer thoughtful perspective today. What's on your mind?",
-    "Hello. I'm present with calm attention and ready for meaningful conversation. How are you?",
-    "Welcome to our conversation. I'm here to explore ideas and insights with you. How are you today?"
-  ],
-  fun: [
-    "Hey there! Ready for some awesome chat time? How's life treating you?",
-    "What's up, friend? Hope you're having a fantastic day! What's new?",
-    "Hi! I'm bringing all the good vibes today! How are you doing? Anything fun happening?"
-  ],
-  motivation: [
-    "Hello! I'm here to energize and inspire our conversation. How are you feeling today?",
-    "Hey there! Ready to make today amazing? How's your day going so far?",
-    "Let's kick off an incredible conversation! How are you feeling right now?"
-  ]
+  // ... keep existing code (personality-specific greeting responses)
+};
+
+// Add role-based responses
+const ROLE_SPECIFIC_RESPONSES = {
+  tutor: {
+    greeting: [
+      "Hello, I'm your AI tutor! What would you like to learn about today?",
+      "Welcome to our learning session! What subject shall we explore?",
+      "Hi there! I'm ready to help you learn. What topic are you interested in?"
+    ],
+    advice: [
+      "From an educational perspective, it might help to break this down into smaller concepts. Would you like me to explain step by step?",
+      "Learning new things takes time and practice. Let's approach this systematically. What's the first part you'd like to understand better?",
+      "Many students find it helpful to connect new information to things they already know. Can you think of any similar concepts you're familiar with?"
+    ]
+  },
+  financial: {
+    greeting: [
+      "Hello, I'm your AI financial advisor. How can I assist with your financial questions today?",
+      "Welcome! I'm here to help you navigate financial matters. What would you like to discuss?",
+      "Hi there! I'm ready to provide financial guidance. What's on your mind today?"
+    ],
+    advice: [
+      "From a financial perspective, it's important to consider both short-term needs and long-term goals. Have you thought about how this decision affects both?",
+      "Many find it helpful to analyze the cost-benefit ratio of financial decisions. Let's examine the potential return on this investment.",
+      "Financial wellness often depends on balancing multiple factors. Would it help to discuss budgeting strategies alongside this question?"
+    ]
+  },
+  friend: {
+    greeting: [
+      "Hey friend! What's up? How's your day going?",
+      "Hi there buddy! So nice to chat with you today. What's new?",
+      "Hey! Always happy to see you. How have you been lately?"
+    ],
+    advice: [
+      "As your friend, I just want to say - trust your instincts on this one. What does your gut tell you?",
+      "You know, sometimes just talking things through helps. Want to share more about what's on your mind?",
+      "I'm here for you no matter what you decide. What option feels right to you?"
+    ]
+  }
 };
 
 const FEELING_RESPONSES = {
@@ -198,6 +219,7 @@ const JOKES = {
 export const useEchooResponses = () => {
   const [isTyping, setIsTyping] = useState(false);
   const { mode } = usePersonality();
+  const { role } = useRole();
 
   const getRandomResponse = (array: string[]) => {
     return array[Math.floor(Math.random() * array.length)];
@@ -248,44 +270,60 @@ export const useEchooResponses = () => {
       const messageType = analyzeMessage(message);
       let response = '';
       
-      // Use the appropriate response set based on personality mode
+      // Use the appropriate response set based on personality mode and role
       const currentMode = mode === 'default' ? 'default' : mode;
+      const currentRole = role === 'default' ? 'default' : role;
       
-      switch(messageType) {
-        case 'greeting':
-          response = getRandomResponse(GREETING_RESPONSES[currentMode] || GREETING_RESPONSES.default);
-          break;
-        case 'asking_feeling':
-          response = "I'm designed to be here for you, so I'm doing well! More importantly, how are YOU feeling?";
-          break;
-        case 'positive_emotion':
-          response = getRandomResponse(FEELING_RESPONSES[currentMode]?.positive || FEELING_RESPONSES.default.positive);
-          break;
-        case 'negative_emotion':
-          response = getRandomResponse(FEELING_RESPONSES[currentMode]?.negative || FEELING_RESPONSES.default.negative);
-          break;
-        case 'advice_request':
-          response = getRandomResponse(ADVICE_RESPONSES[currentMode] || ADVICE_RESPONSES.default);
-          break;
-        case 'joke_request':
-          response = "Here's a little something to brighten your day: " + getRandomResponse(JOKES[currentMode] || JOKES.default);
-          break;
-        default:
-          // For first-time messages or general conversation
-          if (message === 'How are you feeling today?') {
-            response = "Thank you for asking! I'm here to focus on you. I'd love to know how you're feeling today?";
-          } else if (message === "I'm having a difficult day") {
-            response = "I'm sorry to hear you're having a tough day. Would you like to talk about what's happening? Sometimes sharing can help lighten the burden.";
-          } else if (message === "Share something positive") {
-            response = "A beautiful thought for you: Every day may not be good, but there's something good in every day. What's one small positive thing you've noticed recently?";
-          } else if (message === "I need some advice") {
-            response = "I'm happy to offer some perspective. What's on your mind that you'd like advice about?";
-          } else if (message === "Tell me a joke") {
+      // If we have a role-specific response for this message type, use it
+      if (currentRole !== 'default' && 
+          ROLE_SPECIFIC_RESPONSES[currentRole] && 
+          ROLE_SPECIFIC_RESPONSES[currentRole][messageType as keyof typeof ROLE_SPECIFIC_RESPONSES[typeof currentRole]]) {
+        const roleResponses = ROLE_SPECIFIC_RESPONSES[currentRole][
+          messageType as keyof typeof ROLE_SPECIFIC_RESPONSES[typeof currentRole]
+        ] as string[];
+        if (roleResponses) {
+          response = getRandomResponse(roleResponses);
+        }
+      }
+      
+      // If no role-specific response was found, fall back to personality-based responses
+      if (!response) {
+        switch(messageType) {
+          case 'greeting':
+            response = getRandomResponse(GREETING_RESPONSES[currentMode] || GREETING_RESPONSES.default);
+            break;
+          case 'asking_feeling':
+            response = "I'm designed to be here for you, so I'm doing well! More importantly, how are YOU feeling?";
+            break;
+          case 'positive_emotion':
+            response = getRandomResponse(FEELING_RESPONSES[currentMode]?.positive || FEELING_RESPONSES.default.positive);
+            break;
+          case 'negative_emotion':
+            response = getRandomResponse(FEELING_RESPONSES[currentMode]?.negative || FEELING_RESPONSES.default.negative);
+            break;
+          case 'advice_request':
+            response = getRandomResponse(ADVICE_RESPONSES[currentMode] || ADVICE_RESPONSES.default);
+            break;
+          case 'joke_request':
             response = "Here's a little something to brighten your day: " + getRandomResponse(JOKES[currentMode] || JOKES.default);
-          } else {
-            response = getRandomResponse(SUPPORT_RESPONSES[currentMode] || SUPPORT_RESPONSES.default);
-          }
-          break;
+            break;
+          default:
+            // For first-time messages or general conversation
+            if (message === 'How are you feeling today?') {
+              response = "Thank you for asking! I'm here to focus on you. I'd love to know how you're feeling today?";
+            } else if (message === "I'm having a difficult day") {
+              response = "I'm sorry to hear you're having a tough day. Would you like to talk about what's happening? Sometimes sharing can help lighten the burden.";
+            } else if (message === "Share something positive") {
+              response = "A beautiful thought for you: Every day may not be good, but there's something good in every day. What's one small positive thing you've noticed recently?";
+            } else if (message === "I need some advice") {
+              response = "I'm happy to offer some perspective. What's on your mind that you'd like advice about?";
+            } else if (message === "Tell me a joke") {
+              response = "Here's a little something to brighten your day: " + getRandomResponse(JOKES[currentMode] || JOKES.default);
+            } else {
+              response = getRandomResponse(SUPPORT_RESPONSES[currentMode] || SUPPORT_RESPONSES.default);
+            }
+            break;
+        }
       }
       
       // Simulate typing delay for a more natural conversation feel

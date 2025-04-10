@@ -6,7 +6,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { PersonalityProvider } from "./contexts/PersonalityContext";
+import { RoleProvider } from "./contexts/RoleContext";
 import Index from "./pages/Index";
+import Roles from "./pages/Roles";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -16,15 +18,18 @@ const App = () => (
     <TooltipProvider>
       <LanguageProvider>
         <PersonalityProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+          <RoleProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/roles" element={<Roles />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </RoleProvider>
         </PersonalityProvider>
       </LanguageProvider>
     </TooltipProvider>
