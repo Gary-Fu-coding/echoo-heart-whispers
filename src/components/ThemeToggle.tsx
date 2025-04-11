@@ -1,7 +1,8 @@
 
 import React, { useEffect, useState } from 'react';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Computer } from 'lucide-react';
 import { Toggle } from '@/components/ui/toggle';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -32,23 +33,30 @@ const ThemeToggle = () => {
     localStorage.setItem('theme', newTheme);
   };
 
-  const toggleTheme = () => {
-    const newTheme: Theme = theme === 'dark' ? 'light' : 'dark';
+  const changeTheme = (newTheme: Theme) => {
     setTheme(newTheme);
     applyTheme(newTheme);
   };
 
   return (
-    <Toggle 
-      pressed={theme === 'dark'}
-      onPressedChange={toggleTheme}
-      variant="glass-icon"
-      size="icon"
-      className="text-foreground"
-      aria-label="Toggle theme"
+    <ToggleGroup 
+      type="single" 
+      value={theme} 
+      onValueChange={(value) => value && changeTheme(value as Theme)}
+      variant="glass"
+      size="sm"
+      className="luma-glass"
     >
-      {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
-    </Toggle>
+      <ToggleGroupItem value="light" aria-label="Light mode" className="px-2">
+        <Sun size={16} />
+      </ToggleGroupItem>
+      <ToggleGroupItem value="system" aria-label="System theme" className="px-2">
+        <Computer size={16} />
+      </ToggleGroupItem>
+      <ToggleGroupItem value="dark" aria-label="Dark mode" className="px-2">
+        <Moon size={16} />
+      </ToggleGroupItem>
+    </ToggleGroup>
   );
 };
 

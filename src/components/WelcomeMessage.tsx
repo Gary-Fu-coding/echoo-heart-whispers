@@ -2,6 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { usePersonality } from '@/contexts/PersonalityContext';
+import { Volume2 } from 'lucide-react';
 
 interface WelcomeMessageProps {
   onSelectPrompt: (prompt: string) => void;
@@ -51,11 +52,16 @@ const WelcomeMessage: React.FC<WelcomeMessageProps> = ({ onSelectPrompt }) => {
 
   return (
     <div className="glass-panel p-6 mx-auto my-6 max-w-md animate-fade-in">
-      <h2 className="text-xl font-semibold text-center text-echoo-dark dark:text-white mb-3">Welcome to Echoo</h2>
-      <p className="text-sm text-center text-echoo-text dark:text-gray-300 mb-6">
-        Hi! I'm Echoo, your AI friend 💛<br />
-        How would you like me to speak with you today?
-      </p>
+      <div className="flex flex-col items-center mb-6">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 via-purple-500 to-pink-400 flex items-center justify-center shadow-lg mb-3">
+          <Volume2 size={40} className="text-white animate-pulse-soft" />
+        </div>
+        <h2 className="text-2xl font-semibold text-center text-echoo-dark dark:text-white">Welcome to Echoo</h2>
+        <p className="text-sm text-center text-echoo-text dark:text-gray-300 mt-2">
+          Your AI friend that listens and responds 💛<br />
+          How would you like me to speak with you today?
+        </p>
+      </div>
       
       <div className="grid grid-cols-1 gap-3">
         {personalityModes.map((mode) => (
