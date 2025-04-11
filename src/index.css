@@ -125,4 +125,21 @@
   .luma-orange-button {
     @apply bg-orange-500/90 backdrop-blur-lg border border-orange-400/30 text-white rounded-full transition-all duration-300 shadow-md hover:shadow-lg hover:bg-orange-600/90;
   }
+
+  /* Animation for logo */
+  .animate-pulse-soft {
+    animation: pulse-soft 2s infinite ease-in-out;
+  }
+  
+  @keyframes pulse-soft {
+    0% {
+      opacity: 0.7;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.7;
+    }
+  }
 }

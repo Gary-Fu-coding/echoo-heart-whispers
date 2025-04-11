@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, Sparkles, Volume2 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSelector from '@/components/LanguageSelector';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -122,7 +122,9 @@ const Auth = () => {
       
       <div className="w-full max-w-md glass-panel p-6 shadow-lg">
         <div className="mb-6 flex flex-col items-center">
-          <img src="/echoo-avatar.png" alt="Echoo" className="w-16 h-16 mb-2" />
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-400 via-purple-500 to-pink-400 flex items-center justify-center shadow-lg mb-2">
+            <Volume2 size={28} className="text-white animate-pulse-soft" />
+          </div>
           <h1 className="text-2xl font-bold text-echoo-dark dark:text-white">Echoo</h1>
           <p className="text-sm text-muted-foreground">{t('yourHeartsCompanion')}</p>
         </div>
