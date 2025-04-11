@@ -1,382 +1,291 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Eye, EyeOff, Lock, LogIn, Mail, User, UserPlus } from 'lucide-react';
-
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/hooks/use-toast";
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { Eye, EyeOff, Sparkles } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
+import LanguageSelector from '@/components/LanguageSelector';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Form validation schemas
 const loginSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email address" }),
+  email: z.string().email({ message: "Invalid email address" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
-  rememberMe: z.boolean().optional(),
 });
 
 const signupSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
-  email: z.string().email({ message: "Please enter a valid email address" }),
+  email: z.string().email({ message: "Invalid email address" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
   confirmPassword: z.string().min(6, { message: "Password must be at least 6 characters" }),
-  agreeTerms: z.boolean().refine(val => val === true, {
-    message: "You must agree to the terms and conditions",
-  }),
 }).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
+  message: "Passwords do not match",
   path: ["confirmPassword"],
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
-type SignupFormValues = z.infer<typeof signupSchema>;
+type LoginForm = z.infer<typeof loginSchema>;
+type SignupForm = z.infer<typeof signupSchema>;
 
 const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [showLoginPassword, setShowLoginPassword] = useState(false);
-  const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const { t } = useLanguage();
+  const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState("login");
-
-  // Login form
-  const loginForm = useForm<LoginFormValues>({
+  
+  // Login form state and validation
+  const loginForm = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
-      rememberMe: false,
+      email: '',
+      password: '',
     },
   });
 
-  // Signup form
-  const signupForm = useForm<SignupFormValues>({
+  // Signup form state and validation
+  const signupForm = useForm<SignupForm>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      agreeTerms: false,
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
     },
   });
 
-  // Handle login submission
-  const onLoginSubmit = (values: LoginFormValues) => {
-    // For demo purposes, we'll just navigate to the home page
-    // In a real app, this would validate credentials with a backend
-    console.log("Login submitted:", values);
+  // Login form submission
+  const onLoginSubmit = (data: LoginForm) => {
+    // In a real app, you would validate credentials with a backend
+    // For now, we'll just simulate successful login
+    
+    // Store user data in localStorage
+    localStorage.setItem('echoo-user-logged-in', 'true');
+    localStorage.setItem('echoo-user-email', data.email);
+    
+    // Show toast notification
     toast({
       title: "Login Successful",
       description: "Welcome back to Echoo!",
     });
     
-    // Save login state in localStorage (for demo purposes)
-    localStorage.setItem("echoo-user-logged-in", "true");
-    localStorage.setItem("echoo-user-email", values.email);
-    
     // Navigate to the home page
-    navigate("/home");
+    navigate('/home');
   };
 
-  // Handle signup submission
-  const onSignupSubmit = (values: SignupFormValues) => {
-    // For demo purposes, we'll just navigate to the home page
-    // In a real app, this would create a new user account with a backend
-    console.log("Signup submitted:", values);
+  // Signup form submission
+  const onSignupSubmit = (data: SignupForm) => {
+    // In a real app, you would register the user with a backend
+    // For now, we'll just simulate successful registration
+    
+    // Store user data in localStorage
+    localStorage.setItem('echoo-user-logged-in', 'true');
+    localStorage.setItem('echoo-user-email', data.email);
+    localStorage.setItem('echoo-user-name', data.name);
+    
+    // Show toast notification
     toast({
-      title: "Account Created",
-      description: "Welcome to Echoo! Your account has been created successfully.",
+      title: "Registration Successful",
+      description: "Welcome to Echoo!",
     });
     
-    // Save login state in localStorage (for demo purposes)
-    localStorage.setItem("echoo-user-logged-in", "true");
-    localStorage.setItem("echoo-user-email", values.email);
-    localStorage.setItem("echoo-user-name", values.name);
-    
     // Navigate to the home page
-    navigate("/home");
+    navigate('/home');
   };
 
-  // Skip login (guest mode)
-  const skipLogin = () => {
-    navigate("/home");
+  // Continue as guest option
+  const continueAsGuest = () => {
+    localStorage.setItem('echoo-user-logged-in', 'true');
+    localStorage.setItem('echoo-user-email', 'guest@echoo.app');
+    
+    toast({
+      title: "Welcome Guest",
+      description: "You've joined as a guest user.",
+    });
+    
+    navigate('/home');
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-echoo mb-2">Echoo</h1>
-          <p className="text-gray-600 dark:text-gray-300">Your AI Learning Companion</p>
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative">
+      {/* Theme and Language controls */}
+      <div className="absolute top-4 right-4 flex gap-2">
+        <LanguageSelector />
+        <ThemeToggle />
+      </div>
+      
+      <div className="w-full max-w-md glass-panel p-6 shadow-lg">
+        <div className="mb-6 flex flex-col items-center">
+          <img src="/echoo-avatar.png" alt="Echoo" className="w-16 h-16 mb-2" />
+          <h1 className="text-2xl font-bold text-echoo-dark dark:text-white">Echoo</h1>
+          <p className="text-sm text-muted-foreground">{t('yourHeartsCompanion')}</p>
         </div>
-
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        
+        <Tabs defaultValue="login" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="login">Log In</TabsTrigger>
+            <TabsTrigger value="login">Login</TabsTrigger>
             <TabsTrigger value="signup">Sign Up</TabsTrigger>
           </TabsList>
           
+          {/* Login Tab */}
           <TabsContent value="login">
-            <Card>
-              <CardHeader>
-                <CardTitle>Welcome Back</CardTitle>
-                <CardDescription>
-                  Log in to your account to continue your learning journey
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Form {...loginForm}>
-                  <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
-                    <FormField
-                      control={loginForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <span className="absolute left-3 top-3 text-gray-400">
-                                <Mail size={16} />
-                              </span>
-                              <Input className="pl-10" placeholder="your.email@example.com" {...field} />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={loginForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Password</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <span className="absolute left-3 top-3 text-gray-400">
-                                <Lock size={16} />
-                              </span>
-                              <Input 
-                                className="pl-10" 
-                                type={showLoginPassword ? "text" : "password"} 
-                                placeholder="••••••••"
-                                {...field}
-                              />
-                              <button 
-                                type="button"
-                                className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                                onClick={() => setShowLoginPassword(!showLoginPassword)}
-                              >
-                                {showLoginPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                              </button>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <div className="flex items-center justify-between">
-                      <FormField
-                        control={loginForm.control}
-                        name="rememberMe"
-                        render={({ field }) => (
-                          <div className="flex items-center space-x-2">
-                            <Checkbox 
-                              id="remember-me" 
-                              checked={field.value} 
-                              onCheckedChange={field.onChange}
-                            />
-                            <label 
-                              htmlFor="remember-me" 
-                              className="text-sm text-gray-600 dark:text-gray-300 cursor-pointer"
-                            >
-                              Remember me
-                            </label>
-                          </div>
-                        )}
-                      />
-                      <a 
-                        href="#" 
-                        className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                      >
-                        Forgot password?
-                      </a>
-                    </div>
-                    <Button type="submit" className="w-full gap-2">
-                      <LogIn size={16} />
-                      Log In
-                    </Button>
-                  </form>
-                </Form>
-              </CardContent>
-              <CardFooter className="flex flex-col">
-                <div className="relative w-full mt-2 mb-4">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
-                  </div>
-                  <div className="relative flex justify-center text-xs">
-                    <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">or</span>
-                  </div>
+            <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  {...loginForm.register('email')}
+                />
+                {loginForm.formState.errors.email && (
+                  <p className="text-sm text-destructive">
+                    {loginForm.formState.errors.email.message}
+                  </p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    {...loginForm.register('password')}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-0 h-full"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </Button>
                 </div>
-                <Button variant="outline" onClick={skipLogin} className="w-full">
-                  Continue as Guest
-                </Button>
-              </CardFooter>
-            </Card>
+                {loginForm.formState.errors.password && (
+                  <p className="text-sm text-destructive">
+                    {loginForm.formState.errors.password.message}
+                  </p>
+                )}
+              </div>
+              
+              <Button type="submit" className="w-full">Login</Button>
+            </form>
           </TabsContent>
-
+          
+          {/* Signup Tab */}
           <TabsContent value="signup">
-            <Card>
-              <CardHeader>
-                <CardTitle>Create an Account</CardTitle>
-                <CardDescription>
-                  Sign up to personalize your learning experience
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Form {...signupForm}>
-                  <form onSubmit={signupForm.handleSubmit(onSignupSubmit)} className="space-y-4">
-                    <FormField
-                      control={signupForm.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Full Name</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <span className="absolute left-3 top-3 text-gray-400">
-                                <User size={16} />
-                              </span>
-                              <Input className="pl-10" placeholder="Your Name" {...field} />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={signupForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <span className="absolute left-3 top-3 text-gray-400">
-                                <Mail size={16} />
-                              </span>
-                              <Input className="pl-10" placeholder="your.email@example.com" {...field} />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={signupForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Password</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <span className="absolute left-3 top-3 text-gray-400">
-                                <Lock size={16} />
-                              </span>
-                              <Input 
-                                className="pl-10" 
-                                type={showSignupPassword ? "text" : "password"} 
-                                placeholder="••••••••"
-                                {...field}
-                              />
-                              <button 
-                                type="button"
-                                className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                                onClick={() => setShowSignupPassword(!showSignupPassword)}
-                              >
-                                {showSignupPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                              </button>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={signupForm.control}
-                      name="confirmPassword"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Confirm Password</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <span className="absolute left-3 top-3 text-gray-400">
-                                <Lock size={16} />
-                              </span>
-                              <Input 
-                                className="pl-10" 
-                                type={showConfirmPassword ? "text" : "password"} 
-                                placeholder="••••••••"
-                                {...field}
-                              />
-                              <button 
-                                type="button"
-                                className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                              >
-                                {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                              </button>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={signupForm.control}
-                      name="agreeTerms"
-                      render={({ field }) => (
-                        <div className="flex items-start space-x-2 mt-4">
-                          <Checkbox 
-                            id="agree-terms" 
-                            checked={field.value} 
-                            onCheckedChange={field.onChange}
-                          />
-                          <label 
-                            htmlFor="agree-terms" 
-                            className="text-sm text-gray-600 dark:text-gray-300 cursor-pointer"
-                          >
-                            I agree to the <a href="#" className="text-blue-600 hover:underline">Terms of Service</a> and <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>
-                          </label>
-                        </div>
-                      )}
-                    />
-                    <FormMessage>{signupForm.formState.errors.agreeTerms?.message}</FormMessage>
-                    <Button type="submit" className="w-full gap-2 mt-4">
-                      <UserPlus size={16} />
-                      Create Account
-                    </Button>
-                  </form>
-                </Form>
-              </CardContent>
-            </Card>
+            <form onSubmit={signupForm.handleSubmit(onSignupSubmit)} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Enter your name"
+                  {...signupForm.register('name')}
+                />
+                {signupForm.formState.errors.name && (
+                  <p className="text-sm text-destructive">
+                    {signupForm.formState.errors.name.message}
+                  </p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  {...signupForm.register('email')}
+                />
+                {signupForm.formState.errors.email && (
+                  <p className="text-sm text-destructive">
+                    {signupForm.formState.errors.email.message}
+                  </p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    {...signupForm.register('password')}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-0 h-full"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </Button>
+                </div>
+                {signupForm.formState.errors.password && (
+                  <p className="text-sm text-destructive">
+                    {signupForm.formState.errors.password.message}
+                  </p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm your password"
+                    {...signupForm.register('confirmPassword')}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-0 h-full"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </Button>
+                </div>
+                {signupForm.formState.errors.confirmPassword && (
+                  <p className="text-sm text-destructive">
+                    {signupForm.formState.errors.confirmPassword.message}
+                  </p>
+                )}
+              </div>
+              
+              <Button type="submit" className="w-full">Sign Up</Button>
+            </form>
           </TabsContent>
         </Tabs>
+        
+        <div className="mt-6 pt-4 border-t border-border">
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={continueAsGuest}
+          >
+            Continue as Guest
+          </Button>
+        </div>
       </div>
+      
+      <footer className="text-center text-xs text-gray-500 mt-4 flex items-center justify-center gap-1">
+        <Sparkles size={12} className="text-echoo" />
+        <span>{t('poweredBy')}</span>
+      </footer>
     </div>
   );
 };
