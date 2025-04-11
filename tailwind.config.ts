@@ -69,6 +69,24 @@ export default {
 					dark: '#5D8CB3',
 					accent: '#B19CD9',
 					text: '#4A5568'
+				},
+				// New Luma-inspired colors
+				luma: {
+					blue: {
+						light: '#4D91FF',
+						DEFAULT: '#3B82F6',
+						dark: '#2563EB'
+					},
+					orange: {
+						light: '#FF9F56',
+						DEFAULT: '#FF8730',
+						dark: '#E06C1F'
+					},
+					glass: {
+						light: 'rgba(255, 255, 255, 0.1)',
+						DEFAULT: 'rgba(255, 255, 255, 0.15)',
+						dark: 'rgba(255, 255, 255, 0.2)'
+					}
 				}
 			},
 			borderRadius: {
@@ -107,7 +125,16 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.5s ease-out',
 				'pulse-soft': 'pulse-soft 3s ease-in-out infinite'
-			}
+			},
+			backdropFilter: {
+				'none': 'none',
+				'blur': 'blur(4px)',
+				'blur-md': 'blur(8px)',
+				'blur-lg': 'blur(16px)',
+				'blur-xl': 'blur(24px)',
+				'blur-2xl': 'blur(40px)',
+				'blur-3xl': 'blur(64px)',
+			},
 		}
 	},
 	plugins: [require("tailwindcss-animate")],

@@ -108,4 +108,21 @@
   .echoo-message {
     @apply message-bubble bg-echoo/20 dark:bg-primary/20 self-start text-echoo-text dark:text-foreground;
   }
+  
+  /* New Luma-inspired UI components */
+  .luma-glass {
+    @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-full transition-all duration-300;
+  }
+  
+  .luma-glass-active {
+    @apply bg-white/20 backdrop-blur-lg border border-white/30 rounded-full shadow-lg;
+  }
+  
+  .luma-blue-button {
+    @apply bg-blue-500/90 backdrop-blur-lg border border-blue-400/30 text-white rounded-full transition-all duration-300 shadow-md hover:shadow-lg hover:bg-blue-600/90;
+  }
+  
+  .luma-orange-button {
+    @apply bg-orange-500/90 backdrop-blur-lg border border-orange-400/30 text-white rounded-full transition-all duration-300 shadow-md hover:shadow-lg hover:bg-orange-600/90;
+  }
 }

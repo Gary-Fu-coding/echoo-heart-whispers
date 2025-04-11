@@ -100,10 +100,10 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
   return (
     <div className="flex items-center gap-2 p-4 border-t border-gray-100 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-b-2xl">
       <Button 
-        variant="ghost" 
-        size="icon" 
+        variant={isListening ? "glass-active" : "glass"}
+        size="icon-pill"
         onClick={toggleSpeechRecognition}
-        className={`${isListening ? 'text-echoo-accent' : 'text-echoo-dark dark:text-gray-300'} hover:text-echoo-accent hover:bg-echoo-light dark:hover:bg-gray-700`}
+        className={`${isListening ? 'text-echoo-accent' : 'text-echoo-dark dark:text-gray-300'}`}
       >
         {isListening ? <MicOff size={20} /> : <Mic size={20} />}
       </Button>
@@ -112,12 +112,12 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Type a message..."
-        className="flex-1 bg-white/70 dark:bg-gray-700/50 border-echoo/30 dark:border-gray-600 focus-visible:ring-echoo-accent"
+        className="flex-1 bg-white/70 dark:bg-gray-700/50 border-echoo/30 dark:border-gray-600 focus-visible:ring-echoo-accent rounded-full"
       />
       <Button 
         onClick={handleSendMessage}
-        size="icon"
-        className="bg-echoo hover:bg-echoo-dark text-white"
+        size="icon-pill"
+        variant="blue-glass"
         disabled={!message.trim()}
       >
         <Send size={18} />

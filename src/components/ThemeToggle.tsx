@@ -42,7 +42,9 @@ const ThemeToggle = () => {
     <Toggle 
       pressed={theme === 'dark'}
       onPressedChange={toggleTheme}
-      className="rounded-full w-9 h-9 p-0 bg-transparent text-foreground hover:text-primary hover:bg-muted"
+      variant="glass-icon"
+      size="icon"
+      className="text-foreground"
       aria-label="Toggle theme"
     >
       {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
