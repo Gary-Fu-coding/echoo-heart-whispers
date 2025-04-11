@@ -9,10 +9,11 @@ import WelcomeMessage from '@/components/WelcomeMessage';
 import SubjectQuestions from '@/components/SubjectQuestions';
 import { useEchooResponses } from '@/hooks/useEchooResponses';
 import { Message } from '@/components/ChatMessage';
-import { Sparkles, Users, GraduationCap } from 'lucide-react';
+import { LogOut, Sparkles, Users, GraduationCap } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useRole } from '@/contexts/RoleContext';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -21,11 +22,16 @@ const Index = () => {
   const { t, language } = useLanguage();
   const { role } = useRole();
   const navigate = useNavigate();
+  const { toast } = useToast();
   
   // Get tutor info from localStorage if available
   const tutorGrade = localStorage.getItem('echoo-tutor-grade') || '';
   const tutorSubject = localStorage.getItem('echoo-tutor-subject') || '';
   const isTutorMode = role === 'tutor' && tutorGrade && tutorSubject;
+  
+  // Check if user is logged in
+  const isLoggedIn = localStorage.getItem('echoo-user-logged-in') === 'true';
+  const userEmail = localStorage.getItem('echoo-user-email');
 
   // Initial greeting message when component mounts or language changes
   useEffect(() => {
@@ -88,8 +94,41 @@ const Index = () => {
     handleSendMessage(prompt);
   };
 
+  const handleLogout = () => {
+    // Clear user data from localStorage
+    localStorage.removeItem('echoo-user-logged-in');
+    localStorage.removeItem('echoo-user-email');
+    localStorage.removeItem('echoo-user-name');
+    
+    // Show toast notification
+    toast({
+      title: "Logged Out",
+      description: "You have been successfully logged out.",
+    });
+    
+    // Navigate to auth page
+    navigate('/');
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
+      {isLoggedIn && (
+        <div className="w-full max-w-md flex justify-between items-center mb-2">
+          <div className="text-sm text-gray-600 dark:text-gray-300">
+            {userEmail && `Logged in as: ${userEmail}`}
+          </div>
+          <Button 
+            variant="outline"
+            size="sm"
+            onClick={handleLogout}
+            className="gap-1 text-gray-600 hover:text-red-600"
+          >
+            <LogOut size={14} />
+            Logout
+          </Button>
+        </div>
+      )}
+      
       <div className="w-full max-w-md flex flex-col glass-panel h-[85vh] overflow-hidden shadow-lg">
         <ChatHeader />
         
