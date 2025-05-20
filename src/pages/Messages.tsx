@@ -14,7 +14,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 const DEMO_CONTACTS = [
   { id: '1', name: 'Sophia Chen', lastMessage: 'Hey, how are you doing?', time: '10:23 AM', online: true },
   { id: '2', name: 'James Wilson', lastMessage: 'Did you see the latest update?', time: 'Yesterday', online: false },
-  { id: '3', name: 'Olivia Martinez', lastMessage: 'Let me know when you're free to chat', time: 'Yesterday', online: true },
+  { id: '3', name: 'Olivia Martinez', lastMessage: 'Let me know when you\'re free to chat', time: 'Yesterday', online: true },
   { id: '4', name: 'Ethan Brown', lastMessage: 'Thanks for the help!', time: 'Monday', online: false },
 ];
 
