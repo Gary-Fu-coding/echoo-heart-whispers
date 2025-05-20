@@ -14,6 +14,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useRole } from '@/contexts/RoleContext';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import ProfilePicture from '@/components/ProfilePicture';
 
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -118,6 +119,7 @@ const Index = () => {
             {userEmail && `Logged in as: ${userEmail}`}
           </div>
           <div className="flex items-center gap-2">
+            <ProfilePicture size="sm" editable />
             <Button 
               variant="outline"
               size="sm"

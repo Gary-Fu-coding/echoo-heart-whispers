@@ -7,6 +7,7 @@ import LanguageSelector from './LanguageSelector';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Users, Volume2 } from 'lucide-react';
 import { useRole } from '@/contexts/RoleContext';
+import ProfilePicture from './ProfilePicture';
 
 const ChatHeader = () => {
   const { t } = useLanguage();
@@ -33,6 +34,7 @@ const ChatHeader = () => {
           <Users size={20} />
         </Button>
         <LanguageSelector />
+        <ProfilePicture size="sm" editable />
         <ThemeToggle />
       </div>
     </div>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, MessageSquare, Search, Send } from 'lucide-react';
@@ -9,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Sparkles } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import ThemeToggle from '@/components/ThemeToggle';
+import ProfilePicture from '@/components/ProfilePicture';
 
 // Dummy data for demonstration
 const DEMO_CONTACTS = [
@@ -51,12 +51,19 @@ const Messages = () => {
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
+  const [userProfilePic, setUserProfilePic] = useState<string | null>(null);
   
-  // Check if user is logged in
+  // Check if user is logged in and load profile picture
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('echoo-user-logged-in') === 'true';
     if (!isLoggedIn) {
       navigate('/');
+    } else {
+      // Load user profile picture from localStorage
+      const savedProfilePic = localStorage.getItem('echoo-user-profile-pic');
+      if (savedProfilePic) {
+        setUserProfilePic(savedProfilePic);
+      }
     }
   }, [navigate]);
   
@@ -119,6 +126,11 @@ const Messages = () => {
               <Sparkles size={16} />
               <span>AI Chat</span>
             </Button>
+            <ProfilePicture 
+              size="sm" 
+              editable 
+              onImageChange={(imageUrl) => setUserProfilePic(imageUrl)} 
+            />
             <ThemeToggle />
           </div>
         </div>
@@ -199,6 +211,14 @@ const Messages = () => {
                       key={message.id}
                       className={`flex ${message.senderId === 'me' ? 'justify-end' : 'justify-start'}`}
                     >
+                      {message.senderId !== 'me' && (
+                        <Avatar className="mr-2 mb-auto mt-1">
+                          <AvatarFallback className="bg-echoo text-white">
+                            {selectedContact.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+                      
                       <div 
                         className={`max-w-[70%] p-3 rounded-lg ${
                           message.senderId === 'me'
@@ -213,6 +233,21 @@ const Messages = () => {
                             : 'text-gray-500 dark:text-gray-400'
                         }`}>{message.timestamp}</p>
                       </div>
+                      
+                      {message.senderId === 'me' && (
+                        <div className="ml-2 mb-auto mt-1">
+                          {userProfilePic ? (
+                            <Avatar>
+                              <AvatarImage src={userProfilePic} alt="You" />
+                              <AvatarFallback className="bg-echoo-light text-echoo-dark text-xs">ME</AvatarFallback>
+                            </Avatar>
+                          ) : (
+                            <Avatar className="bg-echoo-light border border-echoo/30">
+                              <AvatarFallback className="bg-echoo-light text-echoo-dark text-xs">ME</AvatarFallback>
+                            </Avatar>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
