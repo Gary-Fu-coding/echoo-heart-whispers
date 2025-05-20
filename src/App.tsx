@@ -12,6 +12,7 @@ import Home from "./pages/Home";
 import Index from "./pages/Index";
 import Roles from "./pages/Roles";
 import TutorPage from "./pages/TutorPage";
+import Messages from "./pages/Messages";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
                 <Route path="/chat" element={<Index />} />
                 <Route path="/roles" element={<Roles />} />
                 <Route path="/tutor" element={<TutorPage />} />
+                <Route path="/messages" element={<Messages />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

@@ -9,7 +9,7 @@ import WelcomeMessage from '@/components/WelcomeMessage';
 import SubjectQuestions from '@/components/SubjectQuestions';
 import { useEchooResponses } from '@/hooks/useEchooResponses';
 import { Message } from '@/components/ChatMessage';
-import { LogOut, Sparkles, Users, GraduationCap } from 'lucide-react';
+import { LogOut, Sparkles, Users, GraduationCap, MessageSquare } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useRole } from '@/contexts/RoleContext';
 import { Button } from '@/components/ui/button';
@@ -117,15 +117,26 @@ const Index = () => {
           <div className="text-sm text-gray-600 dark:text-gray-300">
             {userEmail && `Logged in as: ${userEmail}`}
           </div>
-          <Button 
-            variant="outline"
-            size="sm"
-            onClick={handleLogout}
-            className="gap-1 text-gray-600 hover:text-red-600"
-          >
-            <LogOut size={14} />
-            Logout
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/messages')}
+              className="gap-1 text-gray-600 hover:text-echoo"
+            >
+              <MessageSquare size={14} />
+              Messages
+            </Button>
+            <Button 
+              variant="outline"
+              size="sm"
+              onClick={handleLogout}
+              className="gap-1 text-gray-600 hover:text-red-600"
+            >
+              <LogOut size={14} />
+              Logout
+            </Button>
+          </div>
         </div>
       )}
       
