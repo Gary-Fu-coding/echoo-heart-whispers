@@ -5,6 +5,9 @@ import { useToast } from './use-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { Message } from '@/components/ChatMessage';
 
+// Define a type for ChatGPT message roles
+type ChatGPTRole = 'user' | 'assistant' | 'system';
+
 export const useChatGPT = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
@@ -27,20 +30,20 @@ export const useChatGPT = () => {
     try {
       // Format messages for OpenAI API
       const messages = chatHistory.map(msg => ({
-        role: msg.sender === 'user' ? 'user' : 'assistant' as 'user' | 'assistant',
+        role: msg.sender === 'user' ? 'user' : 'assistant' as ChatGPTRole,
         content: msg.content
       }));
       
       // Add the current user message
       messages.push({
-        role: 'user',
+        role: 'user' as ChatGPTRole,
         content: userMessage
       });
       
       // Add system message if this is the beginning of the conversation
       if (chatHistory.length === 0) {
         messages.unshift({
-          role: 'system' as 'user' | 'assistant' | 'system',
+          role: 'system' as ChatGPTRole,
           content: 'You are a helpful, friendly assistant named Echoo. Provide thoughtful, accurate responses.'
         });
       }

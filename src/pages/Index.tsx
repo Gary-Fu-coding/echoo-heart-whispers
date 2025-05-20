@@ -26,7 +26,7 @@ const Index = () => {
   // Get tutor info from localStorage if available
   const tutorGrade = localStorage.getItem('echoo-tutor-grade') || '';
   const tutorSubject = localStorage.getItem('echoo-tutor-subject') || '';
-  const isTutorMode = role === 'tutor' && tutorGrade && tutorSubject;
+  const isTutorMode = role === 'tutor' && Boolean(tutorGrade) && Boolean(tutorSubject);
   
   // Check if user is logged in
   const isLoggedIn = localStorage.getItem('echoo-user-logged-in') === 'true';
