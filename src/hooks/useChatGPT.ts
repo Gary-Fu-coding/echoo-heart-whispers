@@ -40,7 +40,7 @@ export const useChatGPT = () => {
       // Add system message if this is the beginning of the conversation
       if (chatHistory.length === 0) {
         messages.unshift({
-          role: 'system',
+          role: 'system' as 'user' | 'assistant' | 'system',
           content: 'You are a helpful, friendly assistant named Echoo. Provide thoughtful, accurate responses.'
         });
       }
