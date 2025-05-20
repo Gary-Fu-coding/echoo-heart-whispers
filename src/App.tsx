@@ -5,7 +5,7 @@ import { RoleProvider } from '@/contexts/RoleContext';
 import { PersonalityProvider } from '@/contexts/PersonalityContext';
 import { VoiceProvider } from '@/contexts/VoiceContext';
 import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/hooks/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 import "./App.css";
 
 // Import pages
