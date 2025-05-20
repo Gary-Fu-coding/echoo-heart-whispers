@@ -5,12 +5,14 @@ import { Input } from '@/components/ui/input';
 import { Send, Mic, MicOff } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
+import { openaiService } from '@/services/openaiService';
 
 interface ChatInputProps {
-  onSendMessage: (message: string) => void;
+  onSendMessage: (message: string, useAI?: boolean) => void;
+  isAIGenerating?: boolean;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
+const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isAIGenerating = false }) => {
   const [message, setMessage] = useState('');
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
@@ -85,7 +87,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
 
   const handleSendMessage = () => {
     if (message.trim()) {
-      onSendMessage(message);
+      const useAI = openaiService.hasApiKey();
+      onSendMessage(message, useAI);
       setMessage('');
     }
   };
@@ -104,6 +107,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
         size="icon-pill"
         onClick={toggleSpeechRecognition}
         className={`${isListening ? 'text-echoo-accent' : 'text-echoo-dark dark:text-gray-300'}`}
+        disabled={isAIGenerating}
       >
         {isListening ? <MicOff size={20} /> : <Mic size={20} />}
       </Button>
@@ -111,14 +115,15 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="Type a message..."
+        placeholder={isAIGenerating ? "AI is generating a response..." : "Type a message..."}
         className="flex-1 bg-white/70 dark:bg-gray-700/50 border-echoo/30 dark:border-gray-600 focus-visible:ring-echoo-accent rounded-full"
+        disabled={isAIGenerating}
       />
       <Button 
         onClick={handleSendMessage}
         size="icon-pill"
         variant="blue-glass"
-        disabled={!message.trim()}
+        disabled={!message.trim() || isAIGenerating}
       >
         <Send size={18} />
       </Button>

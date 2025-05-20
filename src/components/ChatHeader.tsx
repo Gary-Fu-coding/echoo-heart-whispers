@@ -1,18 +1,24 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
 import { Button } from './ui/button';
 import LanguageSelector from './LanguageSelector';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Users, Volume2 } from 'lucide-react';
+import { Users, Volume2, Key } from 'lucide-react';
 import { useRole } from '@/contexts/RoleContext';
 import ProfilePicture from './ProfilePicture';
+import APIKeyDialog from './APIKeyDialog';
+import { openaiService } from '@/services/openaiService';
 
 const ChatHeader = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const { role } = useRole();
+  const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false);
+
+  // Check if API key exists
+  const hasApiKey = openaiService.hasApiKey();
 
   return (
     <div className="flex items-center justify-between p-4 border-b border-echoo/10 dark:border-gray-700">
@@ -33,10 +39,24 @@ const ChatHeader = () => {
         >
           <Users size={20} />
         </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setApiKeyDialogOpen(true)}
+          title="Set OpenAI API Key"
+          className={`${hasApiKey ? 'text-green-500' : 'text-echoo-dark dark:text-gray-300'} hover:text-echoo`}
+        >
+          <Key size={20} />
+        </Button>
         <LanguageSelector />
         <ProfilePicture size="sm" editable />
         <ThemeToggle />
       </div>
+
+      <APIKeyDialog 
+        open={apiKeyDialogOpen}
+        onOpenChange={setApiKeyDialogOpen}
+      />
     </div>
   );
 };

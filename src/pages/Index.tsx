@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
@@ -15,11 +14,14 @@ import { useRole } from '@/contexts/RoleContext';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import ProfilePicture from '@/components/ProfilePicture';
+import { useChatGPT } from '@/hooks/useChatGPT';
+import { openaiService } from '@/services/openaiService';
 
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [showWelcome, setShowWelcome] = useState(true);
-  const { generateResponse, isTyping } = useEchooResponses();
+  const { generateResponse: generateEchooResponse, isTyping } = useEchooResponses();
+  const { generateResponse: generateChatGPTResponse, isGenerating } = useChatGPT();
   const { t, language } = useLanguage();
   const { role } = useRole();
   const navigate = useNavigate();
@@ -33,6 +35,9 @@ const Index = () => {
   // Check if user is logged in
   const isLoggedIn = localStorage.getItem('echoo-user-logged-in') === 'true';
   const userEmail = localStorage.getItem('echoo-user-email');
+  
+  // Check if ChatGPT is enabled
+  const isChatGPTEnabled = openaiService.hasApiKey();
 
   // Initial greeting message when component mounts or language changes
   useEffect(() => {
@@ -51,7 +56,7 @@ const Index = () => {
     }
   }, [language, t, role, isTutorMode]);
 
-  const handleSendMessage = async (content: string) => {
+  const handleSendMessage = async (content: string, useAI = false) => {
     // Add user message
     const userMessage: Message = {
       id: uuidv4(),
@@ -64,7 +69,7 @@ const Index = () => {
     setShowWelcome(false);
     
     // Show typing indicator
-    if (isTyping) {
+    if (isTyping || isGenerating) {
       const typingIndicator: Message = {
         id: 'typing',
         content: '...',
@@ -74,25 +79,42 @@ const Index = () => {
       setMessages(prev => [...prev, typingIndicator]);
     }
     
-    // Generate Echoo's response
-    const responseContent = await generateResponse(content);
+    // Generate response - either from ChatGPT or fallback to default
+    let responseContent: string;
+    let aiResponse: Message | null = null;
     
-    // Remove typing indicator if it exists
-    setMessages(prev => prev.filter(msg => msg.id !== 'typing'));
+    if (useAI && isChatGPTEnabled) {
+      // Use ChatGPT for response
+      aiResponse = await generateChatGPTResponse(content, messages);
+    } 
     
-    // Add Echoo's response
-    const echooResponse: Message = {
-      id: uuidv4(),
-      content: responseContent,
-      sender: 'echoo',
-      timestamp: new Date()
-    };
-    
-    setMessages(prev => [...prev, echooResponse]);
+    if (!aiResponse) {
+      // Use default Echoo response as fallback
+      responseContent = await generateEchooResponse(content);
+      
+      // Remove typing indicator if it exists
+      setMessages(prev => prev.filter(msg => msg.id !== 'typing'));
+      
+      // Add Echoo's response
+      const echooResponse: Message = {
+        id: uuidv4(),
+        content: responseContent,
+        sender: 'echoo',
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, echooResponse]);
+    } else {
+      // Remove typing indicator if it exists
+      setMessages(prev => prev.filter(msg => msg.id !== 'typing'));
+      
+      // Add ChatGPT response
+      setMessages(prev => [...prev, aiResponse!]);
+    }
   };
 
   const handleSelectPrompt = (prompt: string) => {
-    handleSendMessage(prompt);
+    handleSendMessage(prompt, isChatGPTEnabled);
   };
 
   const handleLogout = () => {
@@ -171,7 +193,10 @@ const Index = () => {
           )}
         </div>
         
-        <ChatInput onSendMessage={handleSendMessage} />
+        <ChatInput 
+          onSendMessage={handleSendMessage} 
+          isAIGenerating={isGenerating}
+        />
       </div>
       
       {role === 'default' && messages.length === 0 && (
@@ -211,6 +236,9 @@ const Index = () => {
       <footer className="text-center text-xs text-gray-500 mt-4 flex items-center justify-center gap-1">
         <Sparkles size={12} className="text-echoo" />
         <span>{t('poweredBy')}</span>
+        {isChatGPTEnabled && (
+          <span className="ml-1 text-green-500">• ChatGPT Enabled</span>
+        )}
       </footer>
     </div>
   );
