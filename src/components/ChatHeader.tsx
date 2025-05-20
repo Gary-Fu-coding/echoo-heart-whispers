@@ -5,7 +5,7 @@ import ThemeToggle from './ThemeToggle';
 import { Button } from './ui/button';
 import LanguageSelector from './LanguageSelector';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Users, Volume2, Key } from 'lucide-react';
+import { Users, Volume2, Key, PencilRule } from 'lucide-react';
 import { useRole } from '@/contexts/RoleContext';
 import ProfilePicture from './ProfilePicture';
 import APIKeyDialog from './APIKeyDialog';
@@ -31,6 +31,15 @@ const ChatHeader = () => {
       </div>
       
       <div className="flex items-center gap-2">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => navigate('/whiteboard')}
+          title="Whiteboard"
+          className="text-echoo-dark dark:text-gray-300 hover:text-echoo"
+        >
+          <PencilRule size={20} />
+        </Button>
         <Button 
           variant="ghost" 
           size="icon" 

@@ -16,6 +16,7 @@ import Index from '@/pages/Index';
 import Messages from '@/pages/Messages';
 import Roles from '@/pages/Roles';
 import TutorPage from '@/pages/TutorPage';
+import WhiteboardPage from '@/pages/WhiteboardPage';
 import NotFound from '@/pages/NotFound';
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
                     <Route path="/messages" element={<Messages />} />
                     <Route path="/roles" element={<Roles />} />
                     <Route path="/tutor" element={<TutorPage />} />
+                    <Route path="/whiteboard" element={<WhiteboardPage />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Router>
