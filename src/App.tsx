@@ -5,6 +5,7 @@ import { RoleProvider } from '@/contexts/RoleContext';
 import { PersonalityProvider } from '@/contexts/PersonalityContext';
 import { VoiceProvider } from '@/contexts/VoiceContext';
 import { ThemeProvider } from "@/components/theme-provider";
+import { UIThemeProvider } from '@/contexts/UIThemeContext';
 import { Toaster } from "@/components/ui/toaster";
 import "./App.css";
 
@@ -20,27 +21,29 @@ import NotFound from '@/pages/NotFound';
 function App() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="echoo-theme">
-      <LanguageProvider>
-        <RoleProvider>
-          <PersonalityProvider>
-            <VoiceProvider>
-              <Router>
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/home" element={<Home />} />
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="/chat" element={<Index />} />
-                  <Route path="/messages" element={<Messages />} />
-                  <Route path="/roles" element={<Roles />} />
-                  <Route path="/tutor" element={<TutorPage />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Router>
-              <Toaster />
-            </VoiceProvider>
-          </PersonalityProvider>
-        </RoleProvider>
-      </LanguageProvider>
+      <UIThemeProvider>
+        <LanguageProvider>
+          <RoleProvider>
+            <PersonalityProvider>
+              <VoiceProvider>
+                <Router>
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/home" element={<Home />} />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="/chat" element={<Index />} />
+                    <Route path="/messages" element={<Messages />} />
+                    <Route path="/roles" element={<Roles />} />
+                    <Route path="/tutor" element={<TutorPage />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Router>
+                <Toaster />
+              </VoiceProvider>
+            </PersonalityProvider>
+          </RoleProvider>
+        </LanguageProvider>
+      </UIThemeProvider>
     </ThemeProvider>
   );
 }

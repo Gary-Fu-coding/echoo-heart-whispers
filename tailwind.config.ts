@@ -6,7 +6,7 @@ export default {
 	content: [
 		"./pages/**/*.{ts,tsx}",
 		"./components/**/*.{ts,tsx}",
-		"./app/**/*.{ts,tsx}",
+		"app/**/*.{ts,tsx}",
 		"./src/**/*.{ts,tsx}",
 	],
 	prefix: "",
@@ -87,7 +87,50 @@ export default {
 						DEFAULT: 'rgba(255, 255, 255, 0.15)',
 						dark: 'rgba(255, 255, 255, 0.2)'
 					}
+				},
+				// Theme-specific colors
+				kids: {
+					primary: '#FF6B6B',
+					secondary: '#4ECDC4',
+					accent: '#FFE66D',
+					background: '#F7FFF7',
+					card: '#FFADE3',
+				},
+				elderly: {
+					primary: '#4A5568',
+					secondary: '#718096',
+					accent: '#A0AEC0',
+					background: '#F7FAFC',
+					card: '#EDF2F7',
+				},
+				feminine: {
+					primary: '#D53F8C',
+					secondary: '#B83280',
+					accent: '#FBB6CE',
+					background: '#FFF5F7',
+					card: '#FED7E2',
+				},
+				masculine: {
+					primary: '#2B6CB0',
+					secondary: '#2C5282',
+					accent: '#4299E1',
+					background: '#EBF8FF',
+					card: '#BEE3F8',
+				},
+				cyber: {
+					primary: '#00F5FF',
+					secondary: '#0D0221',
+					accent: '#7700FF',
+					background: '#0D0221',
+					card: '#190535',
 				}
+			},
+			fontSize: {
+				// Custom font sizes for accessibility
+				'elderly-base': '1.25rem',
+				'elderly-lg': '1.5rem',
+				'elderly-xl': '1.875rem',
+				'elderly-2xl': '2.25rem',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -118,13 +161,24 @@ export default {
 				'pulse-soft': {
 					'0%, 100%': { opacity: '1' },
 					'50%': { opacity: '0.8' }
+				},
+				// Kids theme animations
+				'bounce': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' }
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-5px)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.5s ease-out',
-				'pulse-soft': 'pulse-soft 3s ease-in-out infinite'
+				'pulse-soft': 'pulse-soft 3s ease-in-out infinite',
+				'kids-bounce': 'bounce 2s ease-in-out infinite',
+				'kids-float': 'float 3s ease-in-out infinite'
 			},
 			backdropFilter: {
 				'none': 'none',

@@ -10,6 +10,7 @@ import { useRole } from '@/contexts/RoleContext';
 import ProfilePicture from './ProfilePicture';
 import APIKeyDialog from './APIKeyDialog';
 import { openaiService } from '@/services/openaiService';
+import ThemeSelector from './ThemeSelector';
 
 const ChatHeader = () => {
   const { t } = useLanguage();
@@ -48,6 +49,7 @@ const ChatHeader = () => {
         >
           <Key size={20} />
         </Button>
+        <ThemeSelector />
         <LanguageSelector />
         <ProfilePicture size="sm" editable />
         <ThemeToggle />
