@@ -15,6 +15,7 @@ const Index = () => {
     handleSendMessage, 
     handleSelectPrompt,
     isGenerating,
+    isSpeaking,
     isChatGPTEnabled,
     addInitialTutorMessage,
     resetMessages
@@ -65,7 +66,10 @@ const Index = () => {
         tutorGrade={tutorGrade}
       />
       
-      <AppFooter isChatGPTEnabled={isChatGPTEnabled} />
+      <AppFooter 
+        isChatGPTEnabled={isChatGPTEnabled} 
+        isSpeaking={isSpeaking}
+      />
     </div>
   );
 };

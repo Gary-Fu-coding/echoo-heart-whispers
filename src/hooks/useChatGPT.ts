@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { openaiService } from '@/services/openaiService';
+import { elevenLabsService } from '@/services/elevenLabsService';
 import { useToast } from './use-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { Message } from '@/components/ChatMessage';
@@ -10,11 +11,18 @@ type ChatGPTRole = 'user' | 'assistant' | 'system';
 
 export const useChatGPT = () => {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const { toast } = useToast();
   
   const generateResponse = async (
     userMessage: string, 
-    chatHistory: Message[] = []
+    chatHistory: Message[] = [],
+    voiceOptions?: {
+      enabled: boolean;
+      voiceId: string;
+      model: string;
+      apiKey: string | null;
+    }
   ): Promise<Message | null> => {
     if (!openaiService.hasApiKey()) {
       toast({
@@ -62,6 +70,22 @@ export const useChatGPT = () => {
         timestamp: new Date()
       };
       
+      // Convert text to speech if voice is enabled
+      if (voiceOptions?.enabled && voiceOptions.apiKey) {
+        setIsSpeaking(true);
+        const audioBuffer = await elevenLabsService.textToSpeech({
+          text: responseContent,
+          voiceId: voiceOptions.voiceId,
+          modelId: voiceOptions.model,
+          apiKey: voiceOptions.apiKey
+        });
+        
+        if (audioBuffer) {
+          elevenLabsService.playAudio(audioBuffer);
+        }
+        setIsSpeaking(false);
+      }
+      
       return message;
     } catch (error) {
       console.error('Error generating response:', error);
@@ -78,6 +102,7 @@ export const useChatGPT = () => {
   
   return {
     generateResponse,
-    isGenerating
+    isGenerating,
+    isSpeaking
   };
 };

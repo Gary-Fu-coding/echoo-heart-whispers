@@ -5,12 +5,14 @@ import { Message } from '@/components/ChatMessage';
 import { useEchooResponses } from '@/hooks/useEchooResponses';
 import { useChatGPT } from '@/hooks/useChatGPT';
 import { openaiService } from '@/services/openaiService';
+import { useVoice } from '@/contexts/VoiceContext';
 
 export const useChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [showWelcome, setShowWelcome] = useState(true);
   const { generateResponse: generateEchooResponse, isTyping } = useEchooResponses();
-  const { generateResponse: generateChatGPTResponse, isGenerating } = useChatGPT();
+  const { generateResponse: generateChatGPTResponse, isGenerating, isSpeaking } = useChatGPT();
+  const { voiceSettings, apiKey } = useVoice();
   
   // Check if ChatGPT is enabled
   const isChatGPTEnabled = openaiService.hasApiKey();
@@ -23,6 +25,15 @@ export const useChat = () => {
       timestamp: new Date()
     };
     setMessages([initialGreeting]);
+    
+    // If voice is enabled, speak the greeting
+    if (voiceSettings.enabled && apiKey && isChatGPTEnabled) {
+      generateChatGPTResponse(
+        `Create a warm, welcoming greeting for a ${tutorGrade} level ${tutorSubject} tutoring session.`, 
+        [],
+        { ...voiceSettings, apiKey }
+      );
+    }
   };
   
   const resetMessages = () => {
@@ -57,8 +68,12 @@ export const useChat = () => {
     let aiResponse: Message | null = null;
     
     if (useAI && isChatGPTEnabled) {
-      // Use ChatGPT for response
-      aiResponse = await generateChatGPTResponse(content, messages);
+      // Use ChatGPT for response with voice if enabled
+      aiResponse = await generateChatGPTResponse(
+        content, 
+        messages, 
+        voiceSettings.enabled ? { ...voiceSettings, apiKey } : undefined
+      );
     } 
     
     if (!aiResponse) {
@@ -98,6 +113,7 @@ export const useChat = () => {
     handleSelectPrompt,
     isTyping,
     isGenerating,
+    isSpeaking,
     isChatGPTEnabled,
     addInitialTutorMessage,
     resetMessages

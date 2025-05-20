@@ -1,47 +1,48 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { LanguageProvider } from "./contexts/LanguageContext";
-import { PersonalityProvider } from "./contexts/PersonalityContext";
-import { RoleProvider } from "./contexts/RoleContext";
-import Auth from "./pages/Auth";
-import Home from "./pages/Home";
-import Index from "./pages/Index";
-import Roles from "./pages/Roles";
-import TutorPage from "./pages/TutorPage";
-import Messages from "./pages/Messages";
-import NotFound from "./pages/NotFound";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { LanguageProvider } from '@/contexts/LanguageContext';
+import { RoleProvider } from '@/contexts/RoleContext';
+import { PersonalityProvider } from '@/contexts/PersonalityContext';
+import { VoiceProvider } from '@/contexts/VoiceContext';
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/hooks/use-toast";
+import "./App.css";
 
-const queryClient = new QueryClient();
+// Import pages
+import Home from '@/pages/Home';
+import Auth from '@/pages/Auth';
+import Index from '@/pages/Index';
+import Messages from '@/pages/Messages';
+import Roles from '@/pages/Roles';
+import TutorPage from '@/pages/TutorPage';
+import NotFound from '@/pages/NotFound';
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <LanguageProvider>
-      <PersonalityProvider>
+function App() {
+  return (
+    <ThemeProvider defaultTheme="light" storageKey="echoo-theme">
+      <LanguageProvider>
         <RoleProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Auth />} />
-                <Route path="/home" element={<Home />} />
-                <Route path="/chat" element={<Index />} />
-                <Route path="/roles" element={<Roles />} />
-                <Route path="/tutor" element={<TutorPage />} />
-                <Route path="/messages" element={<Messages />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
+          <PersonalityProvider>
+            <VoiceProvider>
+              <Router>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/home" element={<Home />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/chat" element={<Index />} />
+                  <Route path="/messages" element={<Messages />} />
+                  <Route path="/roles" element={<Roles />} />
+                  <Route path="/tutor" element={<TutorPage />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Router>
+              <Toaster />
+            </VoiceProvider>
+          </PersonalityProvider>
         </RoleProvider>
-      </PersonalityProvider>
-    </LanguageProvider>
-  </QueryClientProvider>
-);
+      </LanguageProvider>
+    </ThemeProvider>
+  );
+}
 
 export default App;
