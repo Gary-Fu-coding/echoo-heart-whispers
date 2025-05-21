@@ -11,12 +11,14 @@ import ProfilePicture from './ProfilePicture';
 import APIKeyDialog from './APIKeyDialog';
 import { openaiService } from '@/services/openaiService';
 import ThemeSelector from './ThemeSelector';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const ChatHeader = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const { role } = useRole();
   const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   // Check if API key exists
   const hasApiKey = openaiService.hasApiKey();
@@ -30,7 +32,7 @@ const ChatHeader = () => {
         <h1 className="text-xl font-semibold text-echoo-dark dark:text-white">Echoo</h1>
       </div>
       
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 md:gap-2">
         <Button 
           variant="ghost" 
           size="icon" 
@@ -40,15 +42,17 @@ const ChatHeader = () => {
         >
           <PencilRuler size={20} />
         </Button>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={() => navigate('/roles')}
-          title={t('changeRole')}
-          className="text-echoo-dark dark:text-gray-300 hover:text-echoo"
-        >
-          <Users size={20} />
-        </Button>
+        {!isMobile && (
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => navigate('/roles')}
+            title={t('changeRole')}
+            className="text-echoo-dark dark:text-gray-300 hover:text-echoo"
+          >
+            <Users size={20} />
+          </Button>
+        )}
         <Button
           variant="ghost"
           size="icon"
@@ -58,10 +62,10 @@ const ChatHeader = () => {
         >
           <Key size={20} />
         </Button>
-        <ThemeSelector />
-        <LanguageSelector />
+        {!isMobile && <ThemeSelector />}
+        {!isMobile && <LanguageSelector />}
         <ProfilePicture size="sm" editable />
-        <ThemeToggle />
+        {!isMobile && <ThemeToggle />}
       </div>
 
       <APIKeyDialog 

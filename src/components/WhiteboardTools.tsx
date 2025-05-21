@@ -3,8 +3,8 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { 
   Pencil, 
-  Square as RectangleIcon,
-  CircleIcon, 
+  Square, 
+  Circle as CircleIcon, 
   Text, 
   Eraser, 
   Trash2, 
@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useUITheme } from '@/contexts/UIThemeContext';
 import { useNavigate } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface WhiteboardToolsProps {
   activeTool: string;
@@ -37,6 +38,7 @@ const WhiteboardTools: React.FC<WhiteboardToolsProps> = ({
 }) => {
   const { uiTheme } = useUITheme();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   
   const colorOptions = [
     '#000000', '#FF0000', '#0000FF', '#00FF00', 
@@ -61,13 +63,13 @@ const WhiteboardTools: React.FC<WhiteboardToolsProps> = ({
           onClick={() => navigate('/chat')}
           className="flex items-center gap-1"
         >
-          <ArrowLeft size={16} /> Back to Chat
+          <ArrowLeft size={16} /> {!isMobile && "Back to Chat"}
         </Button>
         <h1 className="text-xl font-semibold">Whiteboard</h1>
       </div>
       
-      <div className="flex items-center flex-wrap gap-2 justify-between">
-        <div className="flex items-center gap-2">
+      <div className={`flex ${isMobile ? 'flex-col' : 'flex-row items-center flex-wrap'} gap-2 justify-between`}>
+        <div className="flex items-center gap-2 flex-wrap">
           <Button 
             size="icon" 
             className={getButtonClass('pencil')} 
@@ -82,7 +84,7 @@ const WhiteboardTools: React.FC<WhiteboardToolsProps> = ({
             onClick={() => setActiveTool('rectangle')}
             title="Rectangle"
           >
-            <RectangleIcon size={18} />
+            <Square size={18} />
           </Button>
           <Button 
             size="icon" 
@@ -110,7 +112,7 @@ const WhiteboardTools: React.FC<WhiteboardToolsProps> = ({
           </Button>
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className={`flex ${isMobile ? 'flex-col' : 'items-center'} gap-2`}>
           <div className="flex items-center gap-2">
             <label htmlFor="brush-size" className="text-sm">Size:</label>
             <input 
@@ -122,7 +124,7 @@ const WhiteboardTools: React.FC<WhiteboardToolsProps> = ({
               className="w-24"
             />
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 flex-wrap">
             {colorOptions.map(color => (
               <button
                 key={color}

@@ -4,6 +4,7 @@ import { fabric } from 'fabric';
 import { toast } from '@/hooks/use-toast';
 import WhiteboardTools from './WhiteboardTools';
 import { useUITheme } from '@/contexts/UIThemeContext';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Whiteboard = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -14,6 +15,7 @@ const Whiteboard = () => {
   const { uiTheme } = useUITheme();
   const isDrawing = useRef(false);
   const textEditing = useRef(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -21,7 +23,7 @@ const Whiteboard = () => {
     // Initialize canvas
     const fabricCanvas = new fabric.Canvas(canvasRef.current, {
       width: window.innerWidth,
-      height: window.innerHeight - 120, // Subtract header height
+      height: window.innerHeight - (isMobile ? 160 : 120), // Adjust height for mobile
       backgroundColor: '#ffffff',
       isDrawingMode: true
     });
@@ -35,7 +37,7 @@ const Whiteboard = () => {
     // Resize handler
     const handleResize = () => {
       fabricCanvas.setWidth(window.innerWidth);
-      fabricCanvas.setHeight(window.innerHeight - 120);
+      fabricCanvas.setHeight(window.innerHeight - (isMobile ? 160 : 120));
       fabricCanvas.renderAll();
     };
     
@@ -45,7 +47,7 @@ const Whiteboard = () => {
       fabricCanvas.dispose();
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [isMobile]);
 
   // Update brush settings when they change
   useEffect(() => {

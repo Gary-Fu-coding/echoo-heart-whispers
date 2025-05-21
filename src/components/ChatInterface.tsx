@@ -1,11 +1,12 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import ChatHeader from '@/components/ChatHeader';
 import ChatContainer from '@/components/ChatContainer';
 import ChatInput from '@/components/ChatInput';
 import WelcomeMessage from '@/components/WelcomeMessage';
 import SubjectQuestions from '@/components/SubjectQuestions';
 import { Message } from '@/components/ChatMessage';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ChatInterfaceProps {
   messages: Message[];
@@ -28,8 +29,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   onSendMessage,
   onSelectPrompt
 }) => {
+  const isMobile = useIsMobile();
+  
   return (
-    <div className="w-full max-w-md flex flex-col glass-panel h-[85vh] overflow-hidden shadow-lg">
+    <div className={`w-full ${isMobile ? 'max-w-full' : 'max-w-md'} flex flex-col glass-panel h-[85vh] overflow-hidden shadow-lg`}>
       <ChatHeader />
       
       <div className="relative flex-1 overflow-hidden">
@@ -38,7 +41,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         {showWelcome && (
           <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
             {isTutorMode ? (
-              <div className="w-full max-w-xs p-4">
+              <div className={`w-full ${isMobile ? 'p-2' : 'max-w-xs p-4'}`}>
                 <h3 className="text-lg font-semibold text-center mb-2 text-blue-700 dark:text-blue-400">
                   {tutorSubject} - {tutorGrade}
                 </h3>
