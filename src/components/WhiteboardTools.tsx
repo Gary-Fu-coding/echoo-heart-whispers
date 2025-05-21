@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { 
-  PencilIcon, 
-  RectangleIcon,
+  Pencil, 
+  Square as RectangleIcon,
   CircleIcon, 
   Text, 
   Eraser, 
@@ -74,7 +73,7 @@ const WhiteboardTools: React.FC<WhiteboardToolsProps> = ({
             onClick={() => setActiveTool('pencil')}
             title="Pencil"
           >
-            <PencilIcon size={18} />
+            <Pencil size={18} />
           </Button>
           <Button 
             size="icon" 
