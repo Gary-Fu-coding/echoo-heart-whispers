@@ -1,8 +1,8 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { fabric } from 'fabric';
 import { toast } from '@/hooks/use-toast';
 import WhiteboardTools from './WhiteboardTools';
+import WhiteboardAIChat from './WhiteboardAIChat';
 import { useUITheme } from '@/contexts/UIThemeContext';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -23,7 +23,7 @@ const Whiteboard = () => {
     // Initialize canvas
     const fabricCanvas = new fabric.Canvas(canvasRef.current, {
       width: window.innerWidth,
-      height: window.innerHeight - (isMobile ? 160 : 120), // Adjust height for mobile
+      height: window.innerHeight - (isMobile ? 220 : 180), // Adjust for AI chat
       backgroundColor: '#ffffff',
       isDrawingMode: true
     });
@@ -37,7 +37,7 @@ const Whiteboard = () => {
     // Resize handler
     const handleResize = () => {
       fabricCanvas.setWidth(window.innerWidth);
-      fabricCanvas.setHeight(window.innerHeight - (isMobile ? 160 : 120));
+      fabricCanvas.setHeight(window.innerHeight - (isMobile ? 220 : 180));
       fabricCanvas.renderAll();
     };
     
@@ -236,9 +236,10 @@ const Whiteboard = () => {
         brushSize={brushSize}
         setBrushSize={setBrushSize}
       />
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden relative">
         <canvas ref={canvasRef} id="whiteboard-canvas" />
       </div>
+      <WhiteboardAIChat canvas={canvas} />
     </div>
   );
 };
