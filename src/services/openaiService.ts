@@ -34,20 +34,35 @@ export class OpenAIService {
   private defaultModel = 'gpt-4o-mini';
   
   setApiKey(apiKey: string) {
-    this.apiKey = apiKey.trim();
+    // Clean the API key of any potential whitespace or hidden characters
+    this.apiKey = apiKey.trim().replace(/\s/g, '');
     localStorage.setItem('openai-api-key', this.apiKey);
-    console.log('✅ OpenAI API key saved successfully');
-    console.log('🔑 Key format:', this.apiKey.substring(0, 10) + '...');
-    console.log('📏 Key length:', this.apiKey.length);
     
-    // Test the key format
+    console.log('🔧 API Key Processing Details:');
+    console.log('📏 Original length:', apiKey.length);
+    console.log('📏 Cleaned length:', this.apiKey.length);
+    console.log('🔍 First 20 chars:', this.apiKey.substring(0, 20) + '...');
+    console.log('🔍 Last 10 chars:', '...' + this.apiKey.substring(this.apiKey.length - 10));
+    console.log('✅ Has whitespace removed:', apiKey !== this.apiKey);
+    
+    // Enhanced format validation
     if (this.apiKey.startsWith('sk-proj-')) {
-      console.log('✅ Key format is correct (project-based key)');
+      console.log('✅ Correct project-based key format detected');
     } else if (this.apiKey.startsWith('sk-')) {
-      console.log('⚠️  Using legacy key format (should still work)');
+      console.log('⚠️  Legacy key format detected (should still work)');
     } else {
-      console.log('❌ Invalid key format - should start with sk-');
+      console.log('❌ Invalid key format - should start with "sk-" or "sk-proj-"');
     }
+    
+    // Check for common issues
+    if (this.apiKey.includes(' ')) {
+      console.log('⚠️  Warning: API key contains spaces');
+    }
+    if (this.apiKey.includes('\n') || this.apiKey.includes('\r')) {
+      console.log('⚠️  Warning: API key contains line breaks');
+    }
+    
+    console.log('💾 API key saved to localStorage');
   }
   
   getApiKey(): string | null {
@@ -55,6 +70,7 @@ export class OpenAIService {
       this.apiKey = localStorage.getItem('openai-api-key');
       if (this.apiKey) {
         console.log('🔄 Retrieved API key from localStorage');
+        console.log('📏 Retrieved key length:', this.apiKey.length);
       }
     }
     return this.apiKey;
@@ -62,12 +78,15 @@ export class OpenAIService {
   
   hasApiKey(): boolean {
     const key = this.getApiKey();
-    console.log('🔍 Checking API key availability:', !!key);
-    if (key) {
-      console.log('📏 Retrieved key length:', key.length);
-      console.log('🔑 Key starts with:', key.substring(0, 10) + '...');
-    }
+    console.log('🔍 API key availability check:', !!key);
     return !!key;
+  }
+  
+  // Method to clear and reset API key
+  clearApiKey() {
+    this.apiKey = null;
+    localStorage.removeItem('openai-api-key');
+    console.log('🗑️  API key cleared from storage');
   }
   
   async generateCompletion(options: OpenAIRequestOptions): Promise<string> {
@@ -78,25 +97,29 @@ export class OpenAIService {
       throw new Error('API key not set');
     }
     
-    console.log('🚀 Starting OpenAI request...');
-    console.log('🤖 Model:', options.model || this.defaultModel);
-    console.log('🔑 Using key (first 15 chars):', apiKey.substring(0, 15) + '...');
-    console.log('📊 Request details:', {
+    console.log('🚀 OpenAI API Request Starting');
+    console.log('🔑 Key validation:');
+    console.log('  - Length:', apiKey.length);
+    console.log('  - Starts with sk-:', apiKey.startsWith('sk-'));
+    console.log('  - Format check:', apiKey.startsWith('sk-proj-') ? 'Project key' : 'Legacy key');
+    console.log('  - Contains spaces:', apiKey.includes(' '));
+    console.log('  - First 15 chars:', apiKey.substring(0, 15) + '...');
+    
+    const requestBody = {
       model: options.model || this.defaultModel,
-      messageCount: options.messages.length,
+      messages: options.messages,
       temperature: options.temperature || 0.7,
-      maxTokens: options.max_tokens || 1000
-    });
+      max_tokens: options.max_tokens || 1000
+    };
+    
+    console.log('📤 Request payload:');
+    console.log('  - Model:', requestBody.model);
+    console.log('  - Messages count:', requestBody.messages.length);
+    console.log('  - Temperature:', requestBody.temperature);
+    console.log('  - Max tokens:', requestBody.max_tokens);
     
     try {
-      const requestBody = {
-        model: options.model || this.defaultModel,
-        messages: options.messages,
-        temperature: options.temperature || 0.7,
-        max_tokens: options.max_tokens || 1000
-      };
-      
-      console.log('📤 Sending request to OpenAI API...');
+      console.log('🌐 Making fetch request to:', this.apiUrl);
       
       const response = await fetch(this.apiUrl, {
         method: 'POST',
@@ -107,59 +130,68 @@ export class OpenAIService {
         body: JSON.stringify(requestBody)
       });
       
-      console.log('📥 Response received:', {
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok
-      });
+      console.log('📥 Response received:');
+      console.log('  - Status:', response.status);
+      console.log('  - Status Text:', response.statusText);
+      console.log('  - OK:', response.ok);
+      console.log('  - Headers:', Object.fromEntries(response.headers.entries()));
       
       const responseText = await response.text();
       console.log('📄 Raw response length:', responseText.length);
       
       if (!response.ok) {
-        console.error('❌ OpenAI API Error Response:');
+        console.error('❌ OpenAI API Error Details:');
         console.error('Status:', response.status, response.statusText);
         
         let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
         
         try {
           const errorData = JSON.parse(responseText);
-          console.error('Error details:', errorData);
+          console.error('📋 Full error response:', errorData);
           
           if (errorData.error) {
             errorMessage = errorData.error.message || errorMessage;
+            console.error('🔍 Error analysis:');
+            console.error('  - Type:', errorData.error.type);
+            console.error('  - Code:', errorData.error.code);
+            console.error('  - Message:', errorData.error.message);
             
-            // Provide specific guidance based on error type
-            if (errorData.error.code === 'insufficient_quota') {
-              console.error('💳 Quota issue detected');
-              errorMessage += '\n\n🚨 Your OpenAI account has insufficient quota. Since you showed $0/$5 usage, this might be a temporary issue. Try again in a few minutes, or check if your account needs to be activated for API access.';
-            } else if (errorData.error.code === 'invalid_api_key') {
-              console.error('🔑 Invalid API key detected');
-              errorMessage += '\n\n🔑 Your API key appears to be invalid. Please double-check you copied the entire key correctly from https://platform.openai.com/api-keys';
-            } else if (errorData.error.code === 'model_not_found') {
-              console.error('🤖 Model not found');
-              errorMessage += '\n\n🤖 The model specified is not available for your account.';
+            // Enhanced error handling with specific guidance
+            if (errorData.error.code === 'invalid_api_key') {
+              console.error('🔑 INVALID API KEY DETECTED');
+              console.error('📋 Troubleshooting steps:');
+              console.error('  1. Verify key was copied completely from OpenAI dashboard');
+              console.error('  2. Check for extra spaces or characters');
+              console.error('  3. Ensure key starts with sk- or sk-proj-');
+              console.error('  4. Try generating a new key');
+              errorMessage += '\n\n🔧 Try these steps:\n1. Go to https://platform.openai.com/api-keys\n2. Generate a completely new API key\n3. Copy it carefully without extra spaces\n4. Paste it in the API key dialog';
+            } else if (errorData.error.code === 'insufficient_quota') {
+              console.error('💳 QUOTA EXCEEDED');
+              errorMessage += '\n\n💳 Your OpenAI account has insufficient quota. Please add billing at https://platform.openai.com/account/billing';
             }
           }
         } catch (parseError) {
           console.error('Failed to parse error response:', parseError);
-          console.error('Raw error response:', responseText);
+          console.error('Raw error text:', responseText);
         }
         
         throw new Error(errorMessage);
       }
       
       const data: OpenAIResponse = JSON.parse(responseText);
-      console.log('✅ Successful OpenAI response received');
-      console.log('📊 Usage:', data.usage);
-      console.log('💬 Response length:', data.choices[0].message.content.length);
+      console.log('✅ Successful OpenAI response');
+      console.log('📊 Usage stats:', data.usage);
+      console.log('💬 Response preview:', data.choices[0].message.content.substring(0, 100) + '...');
       
       return data.choices[0].message.content;
     } catch (error) {
-      console.error('💥 Critical error in generateCompletion:', error);
+      console.error('💥 Critical error in generateCompletion:');
+      console.error('Error type:', error instanceof Error ? error.constructor.name : typeof error);
+      console.error('Error message:', error instanceof Error ? error.message : String(error));
+      console.error('Full error:', error);
       
       if (error instanceof TypeError && error.message.includes('fetch')) {
-        console.error('🌐 Network error - check your internet connection');
+        console.error('🌐 Network connectivity issue detected');
       }
       
       throw error;
