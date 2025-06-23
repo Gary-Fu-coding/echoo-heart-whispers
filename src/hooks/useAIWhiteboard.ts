@@ -73,10 +73,21 @@ export const useAIWhiteboard = (canvas: fabric.Canvas | null) => {
   };
 
   const processAIRequest = async (userMessage: string) => {
-    if (!openaiService.hasApiKey() || !canvas) {
+    console.log('Processing AI request:', userMessage);
+    
+    if (!openaiService.hasApiKey()) {
       toast({
         title: "Setup Required",
         description: "Please set your OpenAI API key to use AI whiteboard features.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!canvas) {
+      toast({
+        title: "Error",
+        description: "Canvas not available.",
         variant: "destructive",
       });
       return;
@@ -108,10 +119,13 @@ export const useAIWhiteboard = (canvas: fabric.Canvas | null) => {
         }
       ];
 
+      console.log('Sending request to OpenAI...');
       const response = await openaiService.generateCompletion({
         messages,
         temperature: 0.7
       });
+
+      console.log('OpenAI response received:', response);
 
       // Process drawing commands
       const lines = response.split('\n');
@@ -165,11 +179,36 @@ export const useAIWhiteboard = (canvas: fabric.Canvas | null) => {
         }
       }
 
+      toast({
+        title: "Success",
+        description: "AI response completed successfully!",
+      });
+
     } catch (error) {
       console.error('Error processing AI request:', error);
+      
+      let errorMessage = "Failed to process AI request. Please try again.";
+      let errorTitle = "Error";
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+        
+        // Provide more specific guidance based on error
+        if (error.message.includes('insufficient_quota')) {
+          errorTitle = "OpenAI Quota Exceeded";
+          errorMessage = "Your OpenAI account has no available credits. Please check your usage at https://platform.openai.com/usage and add billing if needed.";
+        } else if (error.message.includes('invalid_api_key')) {
+          errorTitle = "Invalid API Key";
+          errorMessage = "Your OpenAI API key is invalid. Please generate a new one at https://platform.openai.com/api-keys";
+        } else if (error.message.includes('model_not_found')) {
+          errorTitle = "Model Not Available";
+          errorMessage = "The AI model is not available for your account. This might be due to account limitations.";
+        }
+      }
+      
       toast({
-        title: "Error",
-        description: "Failed to process AI request. Please try again.",
+        title: errorTitle,
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
