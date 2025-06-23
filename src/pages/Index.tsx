@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ChatInterface from '@/components/ChatInterface';
@@ -87,15 +86,38 @@ const Index = () => {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Animated Artistic Background */}
+      <div className="fixed inset-0 -z-10">
+        {/* Base gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950"></div>
+        
+        {/* Floating orbs */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse-soft"></div>
+        <div className="absolute top-40 right-20 w-96 h-96 bg-gradient-to-r from-purple-400/15 to-pink-400/15 rounded-full blur-3xl animate-pulse-soft" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute bottom-20 left-1/4 w-80 h-80 bg-gradient-to-r from-cyan-400/10 to-blue-400/10 rounded-full blur-3xl animate-pulse-soft" style={{ animationDelay: '2s' }}></div>
+        
+        {/* Geometric patterns */}
+        <div className="absolute inset-0 opacity-5 dark:opacity-10">
+          <div className="absolute top-1/4 left-1/3 w-2 h-2 bg-blue-500 rounded-full animate-ping" style={{ animationDelay: '0s' }}></div>
+          <div className="absolute top-1/2 right-1/4 w-1 h-1 bg-purple-500 rounded-full animate-ping" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute bottom-1/3 left-1/2 w-1.5 h-1.5 bg-cyan-500 rounded-full animate-ping" style={{ animationDelay: '4s' }}></div>
+          <div className="absolute top-3/4 left-1/4 w-1 h-1 bg-indigo-500 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute top-1/3 right-1/3 w-2 h-2 bg-pink-500 rounded-full animate-ping" style={{ animationDelay: '3s' }}></div>
+        </div>
+        
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)] bg-[size:100px_100px] dark:bg-[linear-gradient(rgba(96,165,250,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(96,165,250,0.05)_1px,transparent_1px)]"></div>
+      </div>
+
       {/* Professional Header */}
-      <header className="sticky top-0 z-50 w-full border-b border-slate-200/50 dark:border-slate-800/50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 w-full border-b border-white/20 dark:border-slate-800/50 bg-white/70 dark:bg-slate-950/70 backdrop-blur-2xl">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Left section - Logo and branding */}
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/25">
                   <Sparkles size={18} className="text-white" />
                 </div>
                 <div>
@@ -146,7 +168,7 @@ const Index = () => {
       </header>
       
       {/* Main Content */}
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-6 py-8 relative z-10">
         <div className="flex justify-center">
           <ChatInterface
             messages={messages}

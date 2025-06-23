@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -312,12 +313,50 @@
     }
   }
   
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    25% {
+      transform: translateY(-10px) rotate(1deg);
+    }
+    50% {
+      transform: translateY(-5px) rotate(-1deg);
+    }
+    75% {
+      transform: translateY(-15px) rotate(0.5deg);
+    }
+  }
+  
+  @keyframes drift {
+    0% {
+      transform: translateX(0px) translateY(0px);
+    }
+    33% {
+      transform: translateX(30px) translateY(-30px);
+    }
+    66% {
+      transform: translateX(-20px) translateY(20px);
+    }
+    100% {
+      transform: translateX(0px) translateY(0px);
+    }
+  }
+  
   .animate-fade-in {
     animation: fade-in 0.3s ease-out;
   }
   
   .animate-pulse-soft {
-    animation: pulse-soft 2s infinite ease-in-out;
+    animation: pulse-soft 4s infinite ease-in-out;
+  }
+  
+  .animate-float {
+    animation: float 6s infinite ease-in-out;
+  }
+  
+  .animate-drift {
+    animation: drift 20s infinite linear;
   }
   
   /* Professional focus styles */
@@ -332,5 +371,15 @@
   
   input:focus, textarea:focus {
     @apply ring-2 ring-blue-500/20 border-blue-500;
+  }
+  
+  /* Glass morphism effect */
+  .glassmorphism {
+    @apply bg-white/10 dark:bg-white/5 backdrop-blur-xl border border-white/20 dark:border-white/10;
+  }
+  
+  /* Artistic gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent;
   }
 }
