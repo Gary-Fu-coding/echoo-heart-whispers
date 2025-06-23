@@ -39,16 +39,16 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   };
   
   return (
-    <div className={`w-full ${isMobile ? 'max-w-full' : 'max-w-4xl'} flex flex-col`}>
+    <div className={`w-full ${isMobile ? 'max-w-full h-[calc(100vh-180px)]' : 'max-w-4xl h-[calc(100vh-200px)]'} flex flex-col`}>
       {/* Modern Chat Container */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200/60 dark:border-slate-800/60 overflow-hidden backdrop-blur-sm">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200/60 dark:border-slate-800/60 overflow-hidden backdrop-blur-sm flex flex-col h-full">
         <ChatHeader />
         
-        <div className="relative flex-1 h-[70vh] overflow-hidden">
+        <div className="relative flex-1 overflow-hidden">
           <ChatContainer messages={messages} />
           
           {showWelcome && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-white/95 via-slate-50/95 to-white/95 dark:from-slate-900/95 dark:via-slate-800/95 dark:to-slate-900/95 backdrop-blur-sm">
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-white/95 via-slate-50/95 to-white/95 dark:from-slate-900/95 dark:via-slate-800/95 dark:to-slate-900/95 backdrop-blur-sm overflow-y-auto">
               {isTutorMode ? (
                 <div className={`w-full ${isMobile ? 'p-4' : 'max-w-lg p-6'}`}>
                   <div className="text-center mb-6">
