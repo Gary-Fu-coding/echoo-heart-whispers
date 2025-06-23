@@ -39,7 +39,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   };
   
   return (
-    <div className={`w-full ${isMobile ? 'max-w-full h-[calc(100vh-180px)]' : 'max-w-4xl h-[calc(100vh-200px)]'} flex flex-col`}>
+    <div className={`w-full ${isMobile ? 'max-w-full h-[calc(100vh-180px)]' : 'max-w-6xl h-[calc(100vh-200px)]'} flex flex-col`}>
       {/* Modern Chat Container */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200/60 dark:border-slate-800/60 overflow-hidden backdrop-blur-sm flex flex-col h-full">
         <ChatHeader />
@@ -50,7 +50,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
           {showWelcome && (
             <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-white/95 via-slate-50/95 to-white/95 dark:from-slate-900/95 dark:via-slate-800/95 dark:to-slate-900/95 backdrop-blur-sm overflow-y-auto">
               {isTutorMode ? (
-                <div className={`w-full ${isMobile ? 'p-4' : 'max-w-lg p-6'}`}>
+                <div className={`w-full ${isMobile ? 'p-4' : 'max-w-2xl p-8'}`}>
                   <div className="text-center mb-6">
                     <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                       <span className="text-2xl font-bold text-white">{tutorSubject.charAt(0)}</span>
@@ -69,7 +69,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                   />
                 </div>
               ) : (
-                <div className="w-full max-w-lg p-6">
+                <div className="w-full max-w-2xl p-8">
                   <WelcomeMessage onSelectPrompt={onSelectPrompt} />
                 </div>
               )}

@@ -51,31 +51,31 @@ const WelcomeMessage: React.FC<WelcomeMessageProps> = ({ onSelectPrompt }) => {
   };
 
   return (
-    <div className="glass-panel p-6 mx-auto my-6 max-w-md animate-fade-in">
-      <div className="flex flex-col items-center mb-6">
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 via-purple-500 to-pink-400 flex items-center justify-center shadow-lg mb-3">
+    <div className="glass-panel p-8 mx-auto my-6 w-full animate-fade-in">
+      <div className="flex flex-col items-center mb-8">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 via-purple-500 to-pink-400 flex items-center justify-center shadow-lg mb-4">
           <Volume2 size={40} className="text-white animate-pulse-soft" />
         </div>
-        <h2 className="text-2xl font-semibold text-center text-echoo-dark dark:text-white">Welcome to Echoo</h2>
-        <p className="text-sm text-center text-echoo-text dark:text-gray-300 mt-2">
+        <h2 className="text-3xl font-semibold text-center text-echoo-dark dark:text-white">Welcome to Echoo</h2>
+        <p className="text-base text-center text-echoo-text dark:text-gray-300 mt-3 max-w-lg">
           Your AI friend that listens and responds 💛<br />
           How would you like me to speak with you today?
         </p>
       </div>
       
-      <div className="grid grid-cols-1 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
         {personalityModes.map((mode) => (
           <Button
             key={mode.id}
             variant="outline"
-            className="bg-white/70 dark:bg-gray-800/50 hover:bg-echoo-light dark:hover:bg-gray-700 text-echoo-text dark:text-gray-200 border-echoo/20 dark:border-gray-700 h-auto py-3 justify-start"
+            className="bg-white/70 dark:bg-gray-800/50 hover:bg-echoo-light dark:hover:bg-gray-700 text-echoo-text dark:text-gray-200 border-echoo/20 dark:border-gray-700 h-auto py-4 justify-start transition-all duration-200 hover:scale-105"
             onClick={() => handleSelectMode(mode.id as any)}
           >
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">{mode.icon}</span>
-              <div className="text-left">
-                <div className="font-medium">{mode.title}</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">{mode.description}</div>
+            <div className="flex items-center gap-4 w-full">
+              <span className="text-3xl">{mode.icon}</span>
+              <div className="text-left flex-1">
+                <div className="font-medium text-lg">{mode.title}</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">{mode.description}</div>
               </div>
             </div>
           </Button>
