@@ -1,71 +1,70 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Default light theme */
-    --background: 210 50% 98%;
-    --foreground: 222 47% 11%;
+    /* Enhanced color palette for professional look */
+    --background: 250 250 250;
+    --foreground: 15 23 42;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 255 255 255;
+    --card-foreground: 15 23 42;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 255 255 255;
+    --popover-foreground: 15 23 42;
 
-    --primary: 222 47% 35%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 59 130 246;
+    --primary-foreground: 255 255 255;
 
-    --secondary: 260 50% 70%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 241 245 249;
+    --secondary-foreground: 51 65 85;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 248 250 252;
+    --muted-foreground: 100 116 139;
 
-    --accent: 260 50% 70%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 241 245 249;
+    --accent-foreground: 51 65 85;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 239 68 68;
+    --destructive-foreground: 255 255 255;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222 47% 35%;
+    --border: 226 232 240;
+    --input: 226 232 240;
+    --ring: 59 130 246;
 
-    --radius: 1rem;
-    --font-size-base: 1rem;
+    --radius: 0.75rem;
+    --font-size-base: 0.9rem;
   }
 
   .dark {
-    --background: 240 10% 10%;
-    --foreground: 210 40% 98%;
+    --background: 2 6 23;
+    --foreground: 248 250 252;
     
-    --card: 240 10% 12%;
-    --card-foreground: 0 0% 98%;
+    --card: 15 23 42;
+    --card-foreground: 248 250 252;
     
-    --popover: 240 10% 12%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 15 23 42;
+    --popover-foreground: 248 250 252;
     
-    --primary: 210 40% 50%;
-    --primary-foreground: 240 10% 3.9%;
+    --primary: 96 165 250;
+    --primary-foreground: 2 6 23;
     
-    --secondary: 260 50% 50%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 30 41 59;
+    --secondary-foreground: 226 232 240;
     
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 30 41 59;
+    --muted-foreground: 148 163 184;
     
-    --accent: 260 50% 50%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 30 41 59;
+    --accent-foreground: 226 232 240;
     
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 220 38 38;
+    --destructive-foreground: 248 250 252;
     
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --border: 30 41 59;
+    --input: 30 41 59;
+    --ring: 96 165 250;
   }
 
   /* Kids theme */
@@ -243,109 +242,95 @@
   }
 
   body {
-    @apply bg-gradient-to-b from-background to-background/80 text-foreground min-h-screen transition-colors duration-300;
+    @apply bg-background text-foreground antialiased;
     font-size: var(--font-size-base);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-variation-settings: normal;
+    text-rendering: optimizeLegibility;
   }
   
-  /* Custom scrollbar for chat container */
+  /* Enhanced scrollbar */
   .chat-scrollbar::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
   
   .chat-scrollbar::-webkit-scrollbar-track {
-    @apply bg-background/50 rounded-md;
+    @apply bg-transparent;
   }
   
   .chat-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-primary/30 rounded-md;
+    @apply bg-slate-300 dark:bg-slate-600 rounded-full;
   }
   
   .chat-scrollbar::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary/50;
+    @apply bg-slate-400 dark:bg-slate-500;
   }
 }
 
 @layer components {
+  /* Professional glass effect */
   .glass-panel {
-    @apply bg-card/70 backdrop-blur-sm border border-border/20 rounded-2xl shadow-md;
+    @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/60 dark:border-slate-800/60 rounded-2xl shadow-lg;
   }
   
+  /* Enhanced message bubbles */
   .message-bubble {
-    @apply p-4 rounded-2xl max-w-[85%] animate-fade-in shadow-sm;
+    @apply p-4 rounded-2xl max-w-[85%] animate-fade-in shadow-sm transition-all duration-200;
   }
   
   .user-message {
-    @apply message-bubble bg-echoo-light dark:bg-accent/20 self-end text-echoo-text dark:text-foreground;
+    @apply message-bubble bg-blue-600 text-white self-end shadow-blue-500/20;
   }
   
   .echoo-message {
-    @apply message-bubble bg-echoo/20 dark:bg-primary/20 self-start text-echoo-text dark:text-foreground;
+    @apply message-bubble bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 self-start border border-slate-200/60 dark:border-slate-700/60;
   }
   
-  /* New Luma-inspired UI components */
-  .luma-glass {
-    @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-full transition-all duration-300;
+  /* Professional button styles */
+  .professional-button {
+    @apply bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium px-6 py-2.5 rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-200 transform hover:-translate-y-0.5;
   }
   
-  .luma-glass-active {
-    @apply bg-white/20 backdrop-blur-lg border border-white/30 rounded-full shadow-lg;
+  /* Enhanced animations */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   
-  .luma-blue-button {
-    @apply bg-blue-500/90 backdrop-blur-lg border border-blue-400/30 text-white rounded-full transition-all duration-300 shadow-md hover:shadow-lg hover:bg-blue-600/90;
+  @keyframes pulse-soft {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
   }
   
-  .luma-orange-button {
-    @apply bg-orange-500/90 backdrop-blur-lg border border-orange-400/30 text-white rounded-full transition-all duration-300 shadow-md hover:shadow-lg hover:bg-orange-600/90;
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out;
   }
-
-  /* Animation for logo */
+  
   .animate-pulse-soft {
     animation: pulse-soft 2s infinite ease-in-out;
   }
   
-  @keyframes pulse-soft {
-    0% {
-      opacity: 0.7;
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0.7;
-    }
+  /* Professional focus styles */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500;
   }
   
-  /* Theme-specific components */
-  .theme-kids .button {
-    @apply bg-kids-primary text-white rounded-full shadow-md hover:shadow-lg transform hover:scale-105 transition-all;
+  /* Enhanced input styles */
+  input, textarea {
+    @apply transition-all duration-200;
   }
   
-  .theme-kids .icon {
-    @apply animate-kids-bounce;
-  }
-  
-  .theme-elderly .button {
-    @apply bg-elderly-primary text-white rounded-lg shadow-sm text-elderly-base py-3;
-  }
-  
-  .theme-elderly .text {
-    @apply text-elderly-base;
-  }
-  
-  .theme-elderly .heading {
-    @apply text-elderly-xl font-bold;
-  }
-  
-  .theme-feminine .button {
-    @apply bg-feminine-primary text-white rounded-2xl shadow-md hover:shadow-lg transition-all;
-  }
-  
-  .theme-masculine .button {
-    @apply bg-masculine-primary text-white rounded-md shadow-md hover:shadow-lg transition-all;
-  }
-  
-  .theme-cyber .button {
-    @apply bg-cyber-primary text-cyber-secondary border border-cyber-primary rounded-none hover:bg-cyber-accent transition-colors;
+  input:focus, textarea:focus {
+    @apply ring-2 ring-blue-500/20 border-blue-500;
   }
 }

@@ -9,7 +9,7 @@ import UserAuthStatus from '@/components/UserAuthStatus';
 import ThemeSelector from '@/components/ThemeSelector';
 import LanguageSelector from '@/components/LanguageSelector';
 import { Button } from '@/components/ui/button';
-import { Settings, Mic, MicOff } from 'lucide-react';
+import { Settings, Mic, MicOff, MessageSquare, Sparkles } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useRole } from '@/contexts/RoleContext';
 import { useChatGPT } from '@/hooks/useChatGPT';
@@ -87,51 +87,79 @@ const Index = () => {
   };
   
   return (
-    <div className="min-h-screen gradient-bg p-4 relative">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-4">
-          <UserAuthStatus isLoggedIn={isLoggedIn} userEmail={userEmail} />
-          <h1 className="text-2xl font-bold text-echoo-primary">{t('title')}</h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      {/* Professional Header */}
+      <header className="sticky top-0 z-50 w-full border-b border-slate-200/50 dark:border-slate-800/50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            {/* Left section - Logo and branding */}
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+                  <Sparkles size={18} className="text-white" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-semibold text-slate-900 dark:text-white">
+                    Echoo AI
+                  </h1>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Intelligent Assistant
+                  </p>
+                </div>
+              </div>
+              <UserAuthStatus isLoggedIn={isLoggedIn} userEmail={userEmail} />
+            </div>
+            
+            {/* Right section - Controls */}
+            <div className="flex items-center gap-2">
+              <LanguageSelector />
+              <ThemeSelector />
+              
+              {/* Voice Settings Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowVoiceSettings(true)}
+                className={`relative transition-colors ${
+                  voiceSettings.enabled 
+                    ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50' 
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                }`}
+              >
+                {voiceSettings.enabled ? <Mic size={18} /> : <MicOff size={18} />}
+                {voiceSettings.enabled && (
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full border-2 border-white dark:border-slate-950"></div>
+                )}
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowAPIKeyDialog(true)}
+                className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+              >
+                <Settings size={18} />
+              </Button>
+            </div>
+          </div>
         </div>
-        
-        <div className="flex items-center gap-2">
-          <LanguageSelector />
-          <ThemeSelector />
-          
-          {/* Voice Settings Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setShowVoiceSettings(true)}
-            className={voiceSettings.enabled ? 'text-echoo-accent' : 'text-gray-500'}
-          >
-            {voiceSettings.enabled ? <Mic size={20} /> : <MicOff size={20} />}
-          </Button>
-          
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setShowAPIKeyDialog(true)}
-          >
-            <Settings size={20} />
-          </Button>
-        </div>
-      </div>
+      </header>
       
       {/* Main Content */}
-      <div className="flex justify-center">
-        <ChatInterface
-          messages={messages}
-          showWelcome={showWelcome}
-          isTutorMode={isTutorMode}
-          tutorSubject={tutorSubject}
-          tutorGrade={tutorGrade}
-          isGenerating={isGenerating}
-          onSendMessage={handleSendMessage}
-          onSelectPrompt={handleSelectPrompt}
-        />
-      </div>
+      <main className="container mx-auto px-6 py-8">
+        <div className="flex justify-center">
+          <ChatInterface
+            messages={messages}
+            showWelcome={showWelcome}
+            isTutorMode={isTutorMode}
+            tutorSubject={tutorSubject}
+            tutorGrade={tutorGrade}
+            isGenerating={isGenerating}
+            onSendMessage={handleSendMessage}
+            onSelectPrompt={handleSelectPrompt}
+          />
+        </div>
+      </main>
       
       <AppFooter 
         isChatGPTEnabled={openaiService.hasApiKey()} 

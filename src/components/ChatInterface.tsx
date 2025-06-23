@@ -39,39 +39,49 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   };
   
   return (
-    <div className={`w-full ${isMobile ? 'max-w-full' : 'max-w-md'} flex flex-col glass-panel h-[85vh] overflow-hidden shadow-lg`}>
-      <ChatHeader />
-      
-      <div className="relative flex-1 overflow-hidden">
-        <ChatContainer messages={messages} />
+    <div className={`w-full ${isMobile ? 'max-w-full' : 'max-w-4xl'} flex flex-col`}>
+      {/* Modern Chat Container */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-200/60 dark:border-slate-800/60 overflow-hidden backdrop-blur-sm">
+        <ChatHeader />
         
-        {showWelcome && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
-            {isTutorMode ? (
-              <div className={`w-full ${isMobile ? 'p-2' : 'max-w-xs p-4'}`}>
-                <h3 className="text-lg font-semibold text-center mb-2 text-blue-700 dark:text-blue-400">
-                  {tutorSubject} - {tutorGrade}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300 text-center mb-4">
-                  Ask me anything about {tutorSubject}!
-                </p>
-                <SubjectQuestions 
-                  subject={tutorSubject} 
-                  grade={tutorGrade} 
-                  onSelectPrompt={onSelectPrompt} 
-                />
-              </div>
-            ) : (
-              <WelcomeMessage onSelectPrompt={onSelectPrompt} />
-            )}
-          </div>
-        )}
+        <div className="relative flex-1 h-[70vh] overflow-hidden">
+          <ChatContainer messages={messages} />
+          
+          {showWelcome && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-white/95 via-slate-50/95 to-white/95 dark:from-slate-900/95 dark:via-slate-800/95 dark:to-slate-900/95 backdrop-blur-sm">
+              {isTutorMode ? (
+                <div className={`w-full ${isMobile ? 'p-4' : 'max-w-lg p-6'}`}>
+                  <div className="text-center mb-6">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                      <span className="text-2xl font-bold text-white">{tutorSubject.charAt(0)}</span>
+                    </div>
+                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                      {tutorSubject} Tutor
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-300">
+                      {tutorGrade} • Ready to help you learn
+                    </p>
+                  </div>
+                  <SubjectQuestions 
+                    subject={tutorSubject} 
+                    grade={tutorGrade} 
+                    onSelectPrompt={onSelectPrompt} 
+                  />
+                </div>
+              ) : (
+                <div className="w-full max-w-lg p-6">
+                  <WelcomeMessage onSelectPrompt={onSelectPrompt} />
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+        
+        <ChatInput 
+          onSendMessage={handleSendMessage} 
+          isAIGenerating={isGenerating}
+        />
       </div>
-      
-      <ChatInput 
-        onSendMessage={handleSendMessage} 
-        isAIGenerating={isGenerating}
-      />
     </div>
   );
 };

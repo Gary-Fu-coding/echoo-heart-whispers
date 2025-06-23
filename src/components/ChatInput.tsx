@@ -220,51 +220,96 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isAIGenerating = f
   };
 
   return (
-    <div className="flex items-center gap-2 p-4 border-t border-gray-100 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-b-2xl">
-      <Button 
-        variant={autoListenMode ? "glass-active" : "glass"}
-        size="icon-pill"
-        onClick={toggleAutoListenMode}
-        className={`${autoListenMode ? 'text-echoo-accent animate-pulse' : 'text-echoo-dark dark:text-gray-300'}`}
-        disabled={isAIGenerating}
-      >
-        <Radio size={20} />
-      </Button>
+    <div className="border-t border-slate-200/60 dark:border-slate-800/60 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm p-4">
+      <div className="flex items-center gap-3 max-w-4xl mx-auto">
+        {/* Auto-listening toggle */}
+        <Button 
+          variant="ghost"
+          size="icon"
+          onClick={toggleAutoListenMode}
+          className={`rounded-xl transition-all duration-200 ${
+            autoListenMode 
+              ? 'bg-blue-100 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 shadow-sm' 
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+          }`}
+          disabled={isAIGenerating}
+          title={autoListenMode ? "Auto-listening enabled" : "Enable auto-listening"}
+        >
+          <Radio size={18} className={autoListenMode ? 'animate-pulse' : ''} />
+        </Button>
+        
+        {/* Manual microphone toggle */}
+        <Button 
+          variant="ghost"
+          size="icon"
+          onClick={toggleSpeechRecognition}
+          className={`rounded-xl transition-all duration-200 ${
+            isListening 
+              ? 'bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-red-400 shadow-sm animate-pulse' 
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+          }`}
+          disabled={isAIGenerating || !recognitionReady}
+          title={isListening ? "Stop listening" : "Start voice input"}
+        >
+          {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+        </Button>
+        
+        {/* Message input */}
+        <div className="flex-1 relative">
+          <Input
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={
+              isAIGenerating 
+                ? "AI is thinking..." 
+                : autoListenMode && isListening 
+                  ? "🎤 Listening..." 
+                  : isListening 
+                    ? "🎤 Speak now..." 
+                    : "Type your message..."
+            }
+            className="h-12 pr-12 rounded-xl border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800/50 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 transition-all duration-200"
+            disabled={isAIGenerating}
+          />
+          
+          {/* Send button */}
+          <Button 
+            onClick={handleSendMessage}
+            size="icon"
+            className="absolute right-1 top-1 h-10 w-10 rounded-lg bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white shadow-sm transition-all duration-200 disabled:opacity-50"
+            disabled={!message.trim() || isAIGenerating}
+          >
+            <Send size={16} />
+          </Button>
+        </div>
+      </div>
       
-      <Button 
-        variant={isListening ? "glass-active" : "glass"}
-        size="icon-pill"
-        onClick={toggleSpeechRecognition}
-        className={`${isListening ? 'text-echoo-accent animate-pulse' : 'text-echoo-dark dark:text-gray-300'}`}
-        disabled={isAIGenerating || !recognitionReady}
-      >
-        {isListening ? <MicOff size={20} /> : <Mic size={20} />}
-      </Button>
-      
-      <Input
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder={
-          isAIGenerating 
-            ? "AI is generating a response..." 
-            : autoListenMode && isListening 
-              ? "Auto-listening..." 
-              : isListening 
-                ? "Listening..." 
-                : "Type a message..."
-        }
-        className="flex-1 bg-white/70 dark:bg-gray-700/50 border-echoo/30 dark:border-gray-600 focus-visible:ring-echoo-accent rounded-full"
-        disabled={isAIGenerating}
-      />
-      <Button 
-        onClick={handleSendMessage}
-        size="icon-pill"
-        variant="blue-glass"
-        disabled={!message.trim() || isAIGenerating}
-      >
-        <Send size={18} />
-      </Button>
+      {/* Status indicator */}
+      {(isListening || autoListenMode || isAIGenerating) && (
+        <div className="flex items-center justify-center mt-2">
+          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            {isAIGenerating && (
+              <>
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                <span>AI is generating response...</span>
+              </>
+            )}
+            {autoListenMode && !isAIGenerating && (
+              <>
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span>Auto-listening active</span>
+              </>
+            )}
+            {isListening && !autoListenMode && (
+              <>
+                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                <span>Listening for voice input...</span>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
