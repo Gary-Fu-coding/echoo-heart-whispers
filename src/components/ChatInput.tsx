@@ -15,6 +15,7 @@ interface ChatInputProps {
 const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isAIGenerating = false }) => {
   const [message, setMessage] = useState('');
   const [isListening, setIsListening] = useState(false);
+  const [recognitionReady, setRecognitionReady] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const { language } = useLanguage();
 
@@ -36,29 +37,49 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isAIGenerating = f
       recognitionRef.current.lang = languageMap[language] || 'en-US';
       recognitionRef.current.interimResults = false;
       recognitionRef.current.continuous = false;
+      recognitionRef.current.maxAlternatives = 1;
+      
+      recognitionRef.current.onstart = () => {
+        console.log('🎤 Speech recognition started');
+        setIsListening(true);
+        setRecognitionReady(false);
+      };
       
       recognitionRef.current.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
+        console.log('🗣️ Speech recognized:', transcript);
         setMessage(transcript);
       };
       
       recognitionRef.current.onend = () => {
+        console.log('🎤 Speech recognition ended');
         setIsListening(false);
+        setRecognitionReady(true);
       };
       
       recognitionRef.current.onerror = (event) => {
-        console.error('Speech recognition error', event.error);
+        console.error('🚨 Speech recognition error:', event.error);
         setIsListening(false);
-        toast({
-          title: "Voice recognition error",
-          description: "Could not recognize speech. Please try again.",
-          variant: "destructive",
-        });
+        setRecognitionReady(true);
+        
+        // Only show error toast for serious errors, not for no-speech
+        if (event.error !== 'no-speech') {
+          toast({
+            title: "Voice recognition error",
+            description: `Error: ${event.error}. Please try again.`,
+            variant: "destructive",
+          });
+        }
       };
+      
+      setRecognitionReady(true);
+    } else {
+      console.warn('Speech recognition not supported');
     }
     
     return () => {
       if (recognitionRef.current) {
+        recognitionRef.current.onstart = null;
         recognitionRef.current.onresult = null;
         recognitionRef.current.onend = null;
         recognitionRef.current.onerror = null;
@@ -76,12 +97,32 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isAIGenerating = f
       return;
     }
     
+    // Check if already listening
     if (isListening) {
+      console.log('🛑 Stopping speech recognition');
       recognitionRef.current.stop();
-      setIsListening(false);
-    } else {
-      setIsListening(true);
+      return;
+    }
+    
+    // Check if recognition is ready to start
+    if (!recognitionReady) {
+      console.log('⏳ Speech recognition not ready');
+      return;
+    }
+    
+    try {
+      console.log('▶️ Starting speech recognition');
+      setRecognitionReady(false);
       recognitionRef.current.start();
+    } catch (error) {
+      console.error('❌ Failed to start recognition:', error);
+      setIsListening(false);
+      setRecognitionReady(true);
+      toast({
+        title: "Voice Error",
+        description: "Could not start voice recognition. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -106,8 +147,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isAIGenerating = f
         variant={isListening ? "glass-active" : "glass"}
         size="icon-pill"
         onClick={toggleSpeechRecognition}
-        className={`${isListening ? 'text-echoo-accent' : 'text-echoo-dark dark:text-gray-300'}`}
-        disabled={isAIGenerating}
+        className={`${isListening ? 'text-echoo-accent animate-pulse' : 'text-echoo-dark dark:text-gray-300'}`}
+        disabled={isAIGenerating || !recognitionReady}
       >
         {isListening ? <MicOff size={20} /> : <Mic size={20} />}
       </Button>
@@ -115,7 +156,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isAIGenerating = f
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder={isAIGenerating ? "AI is generating a response..." : "Type a message..."}
+        placeholder={isAIGenerating ? "AI is generating a response..." : isListening ? "Listening..." : "Type a message..."}
         className="flex-1 bg-white/70 dark:bg-gray-700/50 border-echoo/30 dark:border-gray-600 focus-visible:ring-echoo-accent rounded-full"
         disabled={isAIGenerating}
       />
