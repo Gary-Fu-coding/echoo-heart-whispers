@@ -5,6 +5,7 @@ import { elevenLabsService } from '@/services/elevenLabsService';
 import { useToast } from './use-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { Message } from '@/components/ChatMessage';
+import { useVoice } from '@/contexts/VoiceContext';
 
 // Define a type for ChatGPT message roles
 type ChatGPTRole = 'user' | 'assistant' | 'system';
@@ -13,16 +14,11 @@ export const useChatGPT = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const { toast } = useToast();
+  const { voiceSettings, apiKey: voiceApiKey } = useVoice();
   
   const generateResponse = async (
     userMessage: string, 
-    chatHistory: Message[] = [],
-    voiceOptions?: {
-      enabled: boolean;
-      voiceId: string;
-      model: string;
-      apiKey: string | null;
-    }
+    chatHistory: Message[] = []
   ): Promise<Message | null> => {
     if (!openaiService.hasApiKey()) {
       toast({
@@ -71,19 +67,29 @@ export const useChatGPT = () => {
       };
       
       // Convert text to speech if voice is enabled
-      if (voiceOptions?.enabled && voiceOptions.apiKey) {
+      if (voiceSettings.enabled && voiceApiKey) {
         setIsSpeaking(true);
-        const audioBuffer = await elevenLabsService.textToSpeech({
-          text: responseContent,
-          voiceId: voiceOptions.voiceId,
-          modelId: voiceOptions.model,
-          apiKey: voiceOptions.apiKey
-        });
-        
-        if (audioBuffer) {
-          elevenLabsService.playAudio(audioBuffer);
+        try {
+          const audioBuffer = await elevenLabsService.textToSpeech({
+            text: responseContent,
+            voiceId: voiceSettings.voiceId,
+            modelId: voiceSettings.model,
+            apiKey: voiceApiKey
+          });
+          
+          if (audioBuffer) {
+            elevenLabsService.playAudio(audioBuffer);
+          }
+        } catch (voiceError) {
+          console.error('Voice synthesis error:', voiceError);
+          toast({
+            title: "Voice Error",
+            description: "Could not generate speech, but text response is available.",
+            variant: "destructive",
+          });
+        } finally {
+          setIsSpeaking(false);
         }
-        setIsSpeaking(false);
       }
       
       return message;

@@ -7,6 +7,7 @@ import WelcomeMessage from '@/components/WelcomeMessage';
 import SubjectQuestions from '@/components/SubjectQuestions';
 import { Message } from '@/components/ChatMessage';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useVoice } from '@/contexts/VoiceContext';
 
 interface ChatInterfaceProps {
   messages: Message[];
@@ -30,6 +31,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   onSelectPrompt
 }) => {
   const isMobile = useIsMobile();
+  const { voiceSettings, apiKey } = useVoice();
+  
+  const handleSendMessage = (message: string, useAI?: boolean) => {
+    // Pass voice settings to the message handler if voice is enabled
+    onSendMessage(message, useAI);
+  };
   
   return (
     <div className={`w-full ${isMobile ? 'max-w-full' : 'max-w-md'} flex flex-col glass-panel h-[85vh] overflow-hidden shadow-lg`}>
@@ -62,7 +69,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
       </div>
       
       <ChatInput 
-        onSendMessage={onSendMessage} 
+        onSendMessage={handleSendMessage} 
         isAIGenerating={isGenerating}
       />
     </div>
