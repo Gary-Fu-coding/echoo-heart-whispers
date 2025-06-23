@@ -30,8 +30,7 @@ export const useChat = () => {
     if (voiceSettings.enabled && apiKey && isChatGPTEnabled) {
       generateChatGPTResponse(
         `Create a warm, welcoming greeting for a ${tutorGrade} level ${tutorSubject} tutoring session.`, 
-        [],
-        { ...voiceSettings, apiKey }
+        []
       );
     }
   };
@@ -69,11 +68,7 @@ export const useChat = () => {
     
     if (useAI && isChatGPTEnabled) {
       // Use ChatGPT for response with voice if enabled
-      aiResponse = await generateChatGPTResponse(
-        content, 
-        messages, 
-        voiceSettings.enabled ? { ...voiceSettings, apiKey } : undefined
-      );
+      aiResponse = await generateChatGPTResponse(content, messages);
     } 
     
     if (!aiResponse) {

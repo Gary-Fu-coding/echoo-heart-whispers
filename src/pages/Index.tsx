@@ -30,6 +30,18 @@ const Index = () => {
   const [showAPIKeyDialog, setShowAPIKeyDialog] = useState(false);
   const [showVoiceSettings, setShowVoiceSettings] = useState(false);
   
+  // Authentication state
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  
+  useEffect(() => {
+    // Check authentication status from localStorage
+    const loggedIn = localStorage.getItem('echoo-user-logged-in') === 'true';
+    const email = localStorage.getItem('echoo-user-email');
+    setIsLoggedIn(loggedIn);
+    setUserEmail(email);
+  }, []);
+  
   // Check if this is tutor mode
   const isTutorMode = selectedRole?.category === 'tutor';
   const tutorSubject = selectedRole?.name?.split(' ')[0] || '';
@@ -79,7 +91,7 @@ const Index = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-4">
-          <UserAuthStatus />
+          <UserAuthStatus isLoggedIn={isLoggedIn} userEmail={userEmail} />
           <h1 className="text-2xl font-bold text-echoo-primary">{t('title')}</h1>
         </div>
         
