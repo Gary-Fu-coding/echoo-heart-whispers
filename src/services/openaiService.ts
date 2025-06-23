@@ -89,6 +89,44 @@ export class OpenAIService {
     console.log('🗑️  API key cleared from storage');
   }
   
+  // Test connection method
+  async testConnection(): Promise<{ success: boolean; error?: string }> {
+    const apiKey = this.getApiKey();
+    
+    if (!apiKey) {
+      return { success: false, error: 'No API key available' };
+    }
+    
+    try {
+      console.log('🧪 Testing OpenAI connection...');
+      
+      const response = await fetch(this.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: this.defaultModel,
+          messages: [{ role: 'user', content: 'Hello' }],
+          max_tokens: 5
+        })
+      });
+      
+      if (response.ok) {
+        console.log('✅ OpenAI connection test successful');
+        return { success: true };
+      } else {
+        const errorText = await response.text();
+        console.log('❌ OpenAI connection test failed:', response.status, errorText);
+        return { success: false, error: `HTTP ${response.status}: ${errorText}` };
+      }
+    } catch (error) {
+      console.log('❌ OpenAI connection test error:', error);
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    }
+  }
+  
   async generateCompletion(options: OpenAIRequestOptions): Promise<string> {
     const apiKey = this.getApiKey();
     

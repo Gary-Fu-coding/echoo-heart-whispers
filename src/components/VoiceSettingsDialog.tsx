@@ -13,8 +13,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Mic, MicOff } from 'lucide-react';
+import { Mic, MicOff, TestTube, CheckCircle, XCircle } from 'lucide-react';
 import { useVoice, VoiceSettings } from '@/contexts/VoiceContext';
+import { elevenLabsService } from '@/services/elevenLabsService';
+import { useToast } from '@/hooks/use-toast';
 
 interface VoiceSettingsDialogProps {
   open: boolean;
@@ -27,6 +29,10 @@ const VoiceSettingsDialog: React.FC<VoiceSettingsDialogProps> = ({
 }) => {
   const { voiceSettings, updateVoiceSettings, apiKey, setApiKey } = useVoice();
   const [localApiKey, setLocalApiKey] = useState(apiKey || '');
+  const [isTestingConnection, setIsTestingConnection] = useState(false);
+  const [isTestingVoice, setIsTestingVoice] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const { toast } = useToast();
   
   const voices = [
     { id: 'EXAVITQu4vr4xnSDxMaL', name: 'Sarah (Female)' },
@@ -46,6 +52,92 @@ const VoiceSettingsDialog: React.FC<VoiceSettingsDialogProps> = ({
       setApiKey(localApiKey);
     }
     onOpenChange(false);
+  };
+
+  const handleTestConnection = async () => {
+    if (!localApiKey.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter an API key first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsTestingConnection(true);
+    setConnectionStatus('idle');
+
+    try {
+      const result = await elevenLabsService.testConnection(localApiKey.trim());
+
+      if (result.success) {
+        setConnectionStatus('success');
+        toast({
+          title: "Connection Successful! 🎉",
+          description: "Your ElevenLabs API key is working correctly.",
+        });
+      } else {
+        setConnectionStatus('error');
+        toast({
+          title: "Connection Failed",
+          description: result.error || "Unknown error occurred",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      setConnectionStatus('error');
+      toast({
+        title: "Test Failed",
+        description: error instanceof Error ? error.message : "Unknown error",
+        variant: "destructive",
+      });
+    } finally {
+      setIsTestingConnection(false);
+    }
+  };
+
+  const handleTestVoice = async () => {
+    if (!localApiKey.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter an API key first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsTestingVoice(true);
+
+    try {
+      const audioBuffer = await elevenLabsService.textToSpeech({
+        text: "Hello! This is a test of the ElevenLabs voice synthesis. Your voice settings are working correctly!",
+        voiceId: voiceSettings.voiceId,
+        modelId: voiceSettings.model,
+        apiKey: localApiKey.trim()
+      });
+
+      if (audioBuffer) {
+        elevenLabsService.playAudio(arrayBuffer);
+        toast({
+          title: "Voice Test Successful! 🎤",
+          description: "You should hear the test message playing now.",
+        });
+      } else {
+        toast({
+          title: "Voice Test Failed",
+          description: "Could not generate test audio. Check your API key and settings.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Voice Test Error",
+        description: error instanceof Error ? error.message : "Unknown error",
+        variant: "destructive",
+      });
+    } finally {
+      setIsTestingVoice(false);
+    }
   };
   
   return (
@@ -77,6 +169,48 @@ const VoiceSettingsDialog: React.FC<VoiceSettingsDialogProps> = ({
               onChange={(e) => setLocalApiKey(e.target.value)}
               placeholder="Enter your ElevenLabs API key"
             />
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              onClick={handleTestConnection}
+              disabled={isTestingConnection || !localApiKey.trim()}
+              variant="outline"
+              size="sm"
+            >
+              {isTestingConnection ? (
+                <>
+                  <TestTube size={14} className="mr-1 animate-spin" />
+                  Testing...
+                </>
+              ) : (
+                <>
+                  <TestTube size={14} className="mr-1" />
+                  Test Key
+                  {connectionStatus === 'success' && <CheckCircle size={14} className="ml-1 text-green-500" />}
+                  {connectionStatus === 'error' && <XCircle size={14} className="ml-1 text-red-500" />}
+                </>
+              )}
+            </Button>
+
+            <Button
+              onClick={handleTestVoice}
+              disabled={isTestingVoice || !localApiKey.trim()}
+              variant="outline"
+              size="sm"
+            >
+              {isTestingVoice ? (
+                <>
+                  <Mic size={14} className="mr-1 animate-pulse" />
+                  Testing...
+                </>
+              ) : (
+                <>
+                  <Mic size={14} className="mr-1" />
+                  Test Voice
+                </>
+              )}
+            </Button>
           </div>
           
           <div className="grid gap-2">

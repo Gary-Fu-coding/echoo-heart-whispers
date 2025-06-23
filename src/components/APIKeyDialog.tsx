@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { openaiService } from '@/services/openaiService';
-import { Key, Eye, EyeOff } from 'lucide-react';
+import { Key, Eye, EyeOff, TestTube, CheckCircle, XCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface APIKeyDialogProps {
@@ -22,6 +22,8 @@ interface APIKeyDialogProps {
 const APIKeyDialog: React.FC<APIKeyDialogProps> = ({ open, onOpenChange }) => {
   const [apiKey, setApiKey] = useState('');
   const [showKey, setShowKey] = useState(false);
+  const [isTestingConnection, setIsTestingConnection] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const { toast } = useToast();
 
   // Load API key if exists
@@ -57,6 +59,50 @@ const APIKeyDialog: React.FC<APIKeyDialogProps> = ({ open, onOpenChange }) => {
     }
   };
 
+  const handleTestConnection = async () => {
+    if (!apiKey.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter an API key first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsTestingConnection(true);
+    setConnectionStatus('idle');
+
+    try {
+      // Temporarily set the API key for testing
+      openaiService.setApiKey(apiKey.trim());
+      const result = await openaiService.testConnection();
+
+      if (result.success) {
+        setConnectionStatus('success');
+        toast({
+          title: "Connection Successful! 🎉",
+          description: "Your OpenAI API key is working correctly.",
+        });
+      } else {
+        setConnectionStatus('error');
+        toast({
+          title: "Connection Failed",
+          description: result.error || "Unknown error occurred",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      setConnectionStatus('error');
+      toast({
+        title: "Test Failed",
+        description: error instanceof Error ? error.message : "Unknown error",
+        variant: "destructive",
+      });
+    } finally {
+      setIsTestingConnection(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -70,22 +116,45 @@ const APIKeyDialog: React.FC<APIKeyDialogProps> = ({ open, onOpenChange }) => {
           </DialogDescription>
         </DialogHeader>
         
-        <div className="relative mt-2">
-          <Input
-            type={showKey ? "text" : "password"}
-            placeholder="sk-..."
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            className="pr-10"
-          />
+        <div className="space-y-4 mt-2">
+          <div className="relative">
+            <Input
+              type={showKey ? "text" : "password"}
+              placeholder="sk-... or sk-proj-..."
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              className="pr-10"
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="absolute right-0 top-0 h-full"
+              onClick={() => setShowKey(!showKey)}
+            >
+              {showKey ? <EyeOff size={16} /> : <Eye size={16} />}
+            </Button>
+          </div>
+
           <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="absolute right-0 top-0 h-full"
-            onClick={() => setShowKey(!showKey)}
+            onClick={handleTestConnection}
+            disabled={isTestingConnection || !apiKey.trim()}
+            className="w-full"
+            variant="outline"
           >
-            {showKey ? <EyeOff size={16} /> : <Eye size={16} />}
+            {isTestingConnection ? (
+              <>
+                <TestTube size={16} className="mr-2 animate-spin" />
+                Testing Connection...
+              </>
+            ) : (
+              <>
+                <TestTube size={16} className="mr-2" />
+                Test Connection
+                {connectionStatus === 'success' && <CheckCircle size={16} className="ml-2 text-green-500" />}
+                {connectionStatus === 'error' && <XCircle size={16} className="ml-2 text-red-500" />}
+              </>
+            )}
           </Button>
         </div>
         
