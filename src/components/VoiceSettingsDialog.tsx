@@ -117,7 +117,7 @@ const VoiceSettingsDialog: React.FC<VoiceSettingsDialogProps> = ({
       });
 
       if (audioBuffer) {
-        elevenLabsService.playAudio(arrayBuffer);
+        elevenLabsService.playAudio(audioBuffer);
         toast({
           title: "Voice Test Successful! 🎤",
           description: "You should hear the test message playing now.",
