@@ -1,7 +1,10 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-export type AIRole = 'friend' | 'tutor' | 'financial' | 'default';
+export type AIRole = 'friend' | 'tutor' | 'financial' | 'career' | 'writer' | 'fitness' | 
+  'study' | 'interview' | 'business' | 'wellness' | 'nutrition' | 'meditation' | 
+  'art' | 'music' | 'photography' | 'coding' | 'tech' | 'social' | 'motivator' |
+  'travel' | 'productivity' | 'math' | 'language' | 'research' | 'gaming' | 'creative' | 'default';
 
 interface RoleData {
   category: string;

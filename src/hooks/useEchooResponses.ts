@@ -10,7 +10,30 @@ const GREETING_RESPONSES = {
     "Welcome! I'm here and ready to listen. How are you feeling today?",
     "Hello, friend! It's wonderful to chat with you. How's your heart today?"
   ],
-  // ... keep existing code (personality-specific greeting responses)
+  comfort: [
+    "Hello! I'm here for you. How are you feeling today?",
+    "Hi there! I'm your comfort companion. How's your day going so far?",
+    "Welcome! I'm ready to listen and provide support. How are you feeling today?",
+    "Hello, friend! It's wonderful to chat with you. How's your heart today?"
+  ],
+  wisdom: [
+    "Greetings. I'm ready to engage in thoughtful conversation. What's on your mind?",
+    "Hello. I'm here to offer insights and perspective. How's your day progressing?",
+    "Welcome. I'm prepared to explore complex topics with you. How are you feeling today?",
+    "Hello, friend. It's a pleasure to connect with you. What's on your heart today?"
+  ],
+  fun: [
+    "Hey there! Ready for some fun chat time? What's happening?",
+    "Hi there! I'm your fun companion. How's your day going so far?",
+    "Welcome! I'm ready to make you laugh. How are you feeling today?",
+    "Hello, friend! It's wonderful to chat with you. How's your heart today?"
+  ],
+  motivation: [
+    "Hello! Let's make today amazing! What are you working towards?",
+    "Hi there! I'm your motivation companion. How's your day going so far?",
+    "Welcome! I'm ready to help you achieve your goals. How are you feeling today?",
+    "Hello, friend! It's wonderful to chat with you. How's your heart today?"
+  ]
 };
 
 // Add role-based responses
@@ -25,6 +48,42 @@ const ROLE_SPECIFIC_RESPONSES = {
       "From an educational perspective, it might help to break this down into smaller concepts. Would you like me to explain step by step?",
       "Learning new things takes time and practice. Let's approach this systematically. What's the first part you'd like to understand better?",
       "Many students find it helpful to connect new information to things they already know. Can you think of any similar concepts you're familiar with?"
+    ]
+  },
+  career: {
+    greeting: [
+      "Hello! I'm your career coach. Ready to advance your professional journey?",
+      "Hi there! I'm here to help with all your career goals. What's on your mind?",
+      "Welcome! Let's work together to boost your career. What would you like to focus on?"
+    ],
+    advice: [
+      "In terms of career development, I'd recommend focusing on both your immediate goals and long-term vision. What's your next career milestone?",
+      "Professional growth often comes from stepping outside your comfort zone. What new skills or experiences could you pursue?",
+      "Networking and building relationships are crucial for career success. How are you currently building your professional network?"
+    ]
+  },
+  writer: {
+    greeting: [
+      "Hello, fellow writer! Ready to craft some amazing content together?",
+      "Hi there! I'm your writing assistant. What writing project can I help you with?",
+      "Welcome! Let's bring your ideas to life through powerful writing. What are you working on?"
+    ],
+    advice: [
+      "Great writing often comes from authentic voice and clear structure. What's the main message you want to convey?",
+      "Consider your audience - who are you writing for and what do they need to know? This can guide your tone and approach.",
+      "Sometimes the best writing emerges from multiple drafts. Don't worry about perfection in your first attempt - focus on getting your ideas down first."
+    ]
+  },
+  fitness: {
+    greeting: [
+      "Hey there, fitness enthusiast! Ready to crush your health goals?",
+      "Hi! I'm your personal fitness trainer. What are your fitness objectives today?",
+      "Welcome! Let's get you moving towards a healthier, stronger you. What's your current fitness focus?"
+    ],
+    advice: [
+      "Consistency is key in fitness - small daily actions create big results over time. What's one healthy habit you could start today?",
+      "Listen to your body and progress gradually. It's better to do sustainable workouts than to burn out quickly. How are you feeling physically right now?",
+      "Fitness isn't just about exercise - nutrition, sleep, and stress management all play crucial roles. Which area would you like to focus on improving?"
     ]
   },
   financial: {
