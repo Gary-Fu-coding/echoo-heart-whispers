@@ -36,8 +36,8 @@ const GREETING_RESPONSES = {
   ]
 };
 
-// Add role-based responses
-const ROLE_SPECIFIC_RESPONSES = {
+// Add role-based responses - only for key roles that have specific templates
+const ROLE_SPECIFIC_RESPONSES: Record<string, Record<string, string[]>> = {
   tutor: {
     greeting: [
       "Hello, I'm your AI tutor! What would you like to learn about today?",
@@ -112,6 +112,7 @@ const ROLE_SPECIFIC_RESPONSES = {
   }
 };
 
+// Sample response templates for different conversation contexts
 const FEELING_RESPONSES = {
   default: {
     positive: [
@@ -333,14 +334,12 @@ export const useEchooResponses = () => {
       const currentMode = mode === 'default' ? 'default' : mode;
       const currentRole = role === 'default' ? 'default' : role;
       
-      // If we have a role-specific response for this message type, use it
+      // If we have a role-specific response for this message type, use it (with safe access)
       if (currentRole !== 'default' && 
           ROLE_SPECIFIC_RESPONSES[currentRole] && 
-          ROLE_SPECIFIC_RESPONSES[currentRole][messageType as keyof typeof ROLE_SPECIFIC_RESPONSES[typeof currentRole]]) {
-        const roleResponses = ROLE_SPECIFIC_RESPONSES[currentRole][
-          messageType as keyof typeof ROLE_SPECIFIC_RESPONSES[typeof currentRole]
-        ] as string[];
-        if (roleResponses) {
+          ROLE_SPECIFIC_RESPONSES[currentRole][messageType]) {
+        const roleResponses = ROLE_SPECIFIC_RESPONSES[currentRole][messageType];
+        if (roleResponses && roleResponses.length > 0) {
           response = getRandomResponse(roleResponses);
         }
       }
