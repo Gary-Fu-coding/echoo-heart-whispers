@@ -1,8 +1,8 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useRole } from '@/contexts/RoleContext';
+import { Tabs, LayoutGrid } from 'lucide-react';
 import { 
   Book, BarChart, Smile, Heart, Brain, Calculator, Music, Palette, Globe, Code, 
   Camera, Gamepad2, Briefcase, PenTool, ChefHat, Plane, Dumbbell, Leaf,
@@ -254,9 +254,28 @@ const Roles = () => {
           <h2 className="text-3xl font-semibold text-echoo-dark dark:text-white mb-2">
             Choose Your AI's Role
           </h2>
-          <p className="text-base text-echoo-text dark:text-gray-300">
+          <p className="text-base text-echoo-text dark:text-gray-300 mb-4">
             Select how you'd like your AI assistant to help you today
           </p>
+          
+          {/* View Toggle Buttons */}
+          <div className="flex justify-center gap-4 mb-6">
+            <Button
+              variant="outline"
+              onClick={() => navigate('/tabbed-roles')}
+              className="gap-2"
+            >
+              <Tabs size={16} />
+              Tabbed View
+            </Button>
+            <Button
+              variant="outline"
+              className="gap-2 bg-echoo-light dark:bg-gray-700"
+            >
+              <LayoutGrid size={16} />
+              Grid View (Current)
+            </Button>
+          </div>
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">

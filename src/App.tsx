@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { RoleProvider } from '@/contexts/RoleContext';
@@ -21,6 +20,7 @@ import WritingPage from '@/pages/WritingPage';
 import FitnessPage from '@/pages/FitnessPage';
 import WhiteboardPage from '@/pages/WhiteboardPage';
 import NotFound from '@/pages/NotFound';
+import TabbedRoles from '@/pages/TabbedRoles';
 
 function App() {
   return (
@@ -38,6 +38,7 @@ function App() {
                     <Route path="/chat" element={<Index />} />
                     <Route path="/messages" element={<Messages />} />
                     <Route path="/roles" element={<Roles />} />
+                    <Route path="/tabbed-roles" element={<TabbedRoles />} />
                     <Route path="/tutor" element={<TutorPage />} />
                     <Route path="/career" element={<CareerPage />} />
                     <Route path="/writing" element={<WritingPage />} />
