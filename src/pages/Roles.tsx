@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useRole } from '@/contexts/RoleContext';
-import { Tabs, LayoutGrid } from 'lucide-react';
+import { LayoutGrid } from 'lucide-react';
 import { 
   Book, BarChart, Smile, Heart, Brain, Calculator, Music, Palette, Globe, Code, 
   Camera, Gamepad2, Briefcase, PenTool, ChefHat, Plane, Dumbbell, Leaf,
