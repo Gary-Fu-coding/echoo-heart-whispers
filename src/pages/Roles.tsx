@@ -1,8 +1,9 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useRole } from '@/contexts/RoleContext';
-import { LayoutGrid } from 'lucide-react';
+import { LayoutGrid, Layers } from 'lucide-react';
 import { 
   Book, BarChart, Smile, Heart, Brain, Calculator, Music, Palette, Globe, Code, 
   Camera, Gamepad2, Briefcase, PenTool, ChefHat, Plane, Dumbbell, Leaf,
@@ -265,7 +266,7 @@ const Roles = () => {
               onClick={() => navigate('/tabbed-roles')}
               className="gap-2"
             >
-              <Tabs size={16} />
+              <Layers size={16} />
               Tabbed View
             </Button>
             <Button
